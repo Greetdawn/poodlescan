@@ -40,13 +40,13 @@ type PoodleSniffer interface {
 	JsonSave()
 }
 
-// 实例化接口
+// 实例化接口，此处存放嗅探结果
 type PoodleSnif struct {
 	SrcTarget     string   // 接受待检测的url或者IP
 	IsIP          bool     // 判断收到的参数是IP还是域名
 	SubDomain     []string // 子域列表
-	Domain        string   // 域名
-	IPAddress     string   // IP地址
+	Domain        []string // IP绑定的域名以及嗅探到的子域名
+	IPAddress     []string // 真实IP地址
 	IPC           string   // 备案号
 	Ports         []string // 开放端口\端口信息
 	WeekAddress   []string // 后台地址等等
