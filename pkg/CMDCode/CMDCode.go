@@ -1,5 +1,5 @@
 // 用于接收命令行参数
-package main
+package CMDCode
 
 func CMDPause() {
 

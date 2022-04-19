@@ -2,7 +2,8 @@ package main
 
 // 全局变量定义
 type CMDPara struct {
-	Threads int // 总线程数，同时扫描几个目标
+	Target  string // 目标
+	Threads int    // 总线程数，同时扫描几个目标
 	PortScanPara
 }
 

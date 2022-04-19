@@ -1,4 +1,4 @@
-package main
+package sniffer
 
 import (
 	"sync"
@@ -57,3 +57,9 @@ func TeddyInit() TeddySniff {
 	var Teddy TeddySniff
 	return Teddy
 }
+
+// func TeddyStartSniffer(c CMDPara, T TeddySniffer) TeddySniff {
+// 	var ts TeddySniff
+// 	ts.IsIP = !T.HasDomain()
+// 	return ts
+// }
