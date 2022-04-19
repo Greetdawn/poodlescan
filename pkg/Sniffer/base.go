@@ -1,6 +1,7 @@
-package sniffer
+package Sniffer
 
 import (
+	"poodle/internal/cmdinit"
 	"sync"
 )
 
@@ -11,7 +12,7 @@ import (
 // 如果输入是ip则探测端口，以及ip上绑定的域名，
 // 此时因为输入的是IP，所以探测到ip所绑定的域名后不再进行子域探测，
 // 以防止还有子域绑定到其他的ip上所导致的扫描偏离主体。
-type TeddySniffer interface {
+type PoodleSniffer interface {
 	// 先格式化，然后判断输入类型，是ip[false]还是域名[true]
 	TargetType() bool
 
@@ -40,7 +41,7 @@ type TeddySniffer interface {
 }
 
 // 实例化接口
-type TeddySniff struct {
+type PoodleSnif struct {
 	SrcTarget     string   // 接受待检测的url或者IP
 	IsIP          bool     // 判断收到的参数是IP还是域名
 	SubDomain     []string // 子域列表
@@ -53,13 +54,9 @@ type TeddySniff struct {
 }
 
 // 结构体构造函数
-func TeddyInit() TeddySniff {
-	var Teddy TeddySniff
-	return Teddy
+func PoodleSinfferInit() PoodleSnif {
+	cmdPara := &cmdinit.CMDPara{}
+	cmdPara.CMDPause()
+	var Poodle PoodleSnif
+	return Poodle
 }
-
-// func TeddyStartSniffer(c CMDPara, T TeddySniffer) TeddySniff {
-// 	var ts TeddySniff
-// 	ts.IsIP = !T.HasDomain()
-// 	return ts
-// }
