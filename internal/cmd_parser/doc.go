@@ -4,4 +4,4 @@
 // go源文件的文件名应该小写，采用下划线分割命名
 // 接口中方法的具体实现应该在本目录中新建go文件
 
-package cmdinit
+package cmdparser

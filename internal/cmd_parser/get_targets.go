@@ -1,4 +1,4 @@
-package cmdinit
+package cmdparser
 
 import (
 	"fmt"

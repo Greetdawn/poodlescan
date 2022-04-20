@@ -1,5 +1,5 @@
 // 本文件主要用来定义一些初始化参数
-package cmdinit
+package cmdparser
 
 // 为全局变量初始化
 type PoodleInit interface {
