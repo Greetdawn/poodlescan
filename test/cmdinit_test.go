@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"poodle/internal/cmdinit"
+	cmdinit "poodle/internal/cmd_parser"
 	"testing"
 )
 
