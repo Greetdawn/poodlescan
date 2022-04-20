@@ -1,8 +1,7 @@
 package main
 
-func main() {
-	// 运行一个线程来接收命令
+import "poodle/pkg/sniffer"
 
-	// 运行一个线程来发包
-	// 目前就用这个线程来输出信息
+func main() {
+	sniffer.PoodleSinfferInit()
 }
