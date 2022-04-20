@@ -1,7 +1,6 @@
 package sniffer
 
 import (
-	"poodle/internal/cmdinit"
 	"sync"
 )
 
@@ -54,10 +53,4 @@ type PoodleSnif struct {
 }
 
 // 结构体构造函数初始化嗅探器
-func PoodleSinfferInit() PoodleSnif {
-	cmdPara := &cmdinit.CMDPara{}
-	cmdPara.CMDUserInputPause(cmdPara)
-	var Poodle PoodleSnif
-
-	return Poodle
-}
+func PoodleSinfferInit()
