@@ -1,4 +1,4 @@
-package Sniffer
+package sniffer
 
 import (
 	"poodle/internal/cmdinit"
@@ -14,7 +14,7 @@ import (
 // 以防止还有子域绑定到其他的ip上所导致的扫描偏离主体。
 type PoodleSniffer interface {
 	// 先格式化，然后判断输入类型，是ip[false]还是域名[true]
-	TargetType() bool
+	TargetIsIP() bool
 
 	// 如果有域名，则保存域名，并且HasDomain==true
 	HasDomain() bool
@@ -53,10 +53,11 @@ type PoodleSnif struct {
 	SpecialSuffic sync.Map // 特殊后缀地址文件比如.zip.xlsx后缀
 }
 
-// 结构体构造函数
+// 结构体构造函数初始化嗅探器
 func PoodleSinfferInit() PoodleSnif {
 	cmdPara := &cmdinit.CMDPara{}
-	cmdPara.CMDPause()
+	cmdPara.CMDUserInputPause(cmdPara)
 	var Poodle PoodleSnif
+
 	return Poodle
 }
