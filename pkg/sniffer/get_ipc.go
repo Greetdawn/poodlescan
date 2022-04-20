@@ -1,5 +1,6 @@
 package sniffer
 
-func (teddySniff PoodleSnif) GetIPC(isIP bool, target string) {
+// todo
+func (PoodleSnif) getIPC(p *PoodleSnif) {
 
 }

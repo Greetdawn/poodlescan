@@ -1,5 +1,4 @@
 package sniffer
 
-func (teddySniff PoodleSnif) GetPort(target string) {
-
-}
+// todo
+func (PoodleSnif) getPort(p *PoodleSnif) {}

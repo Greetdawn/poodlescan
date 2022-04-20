@@ -20,6 +20,7 @@ var (
 // 另外全局并发控制从此处开始
 func (CMDPara) GetTargets(CMDParas *CMDPara) {
 	if CMDParas.IsReadTargetsFromFile {
+		// todo
 		// 从文件中解析，应该通过gorouting输入目标，并监听退出标志，
 
 	} else {
