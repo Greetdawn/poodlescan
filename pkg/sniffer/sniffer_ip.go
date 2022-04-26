@@ -3,6 +3,8 @@
 // 属于嗅探器的子类，主要用于嗅探和IP相关的资源
 package sniffer
 
+import "poodle/pkg/common"
+
 type ipSniffer struct {
 	// 父类
 	sniffer Sniffer
@@ -19,7 +21,7 @@ func (this *ipSniffer) SaveInfo() {
 }
 
 // 探测该IP 是否绑定了域名
-func (this *ipSniffer) sniffBindDomain(ip string) (domain StDomain) {
+func (this *ipSniffer) sniffBindDomain(ip string) (domain common.StDomain) {
 	return domain
 }
 
