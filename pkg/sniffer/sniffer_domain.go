@@ -8,6 +8,9 @@ import "poodle/pkg/utils"
 type domainSniffer struct {
 	// 父类
 	sniffer Sniffer
+
+	// 所有域名列表（本域名+子域名）
+	domainList []utils.StDomain
 }
 
 // 实现iSniffer的接口:StartSniff
