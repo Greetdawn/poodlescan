@@ -1,4 +1,4 @@
-package utils
+package sniffer
 
 type StDomain struct {
 	// 域名名称，不加www，如 baidu.com

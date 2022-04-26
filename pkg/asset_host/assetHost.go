@@ -1,6 +1,6 @@
 package asset_host
 
-import "poodle/pkg/utils"
+import "poodle/pkg/sniffer"
 
 type StAssetHost struct {
 	// 本资产的IP地址
@@ -8,7 +8,7 @@ type StAssetHost struct {
 	ip string
 	// 资产域名
 	// 当前为一个域名，后面根据需要可能会换成域名切片
-	domain utils.StDomain
+	domain sniffer.StDomain
 	// 资产开放的端口信息
 	openedPorts []int
 }

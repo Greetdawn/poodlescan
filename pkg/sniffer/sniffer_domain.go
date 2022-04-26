@@ -3,14 +3,12 @@
 // 属于嗅探器的子类，主要用于嗅探和域名相关的资源
 package sniffer
 
-import "poodle/pkg/utils"
-
 type domainSniffer struct {
 	// 父类
 	sniffer Sniffer
 
 	// 所有域名列表（本域名+子域名）
-	domainList []utils.StDomain
+	domainList []StDomain
 }
 
 // 实现iSniffer的接口:StartSniff
@@ -24,22 +22,22 @@ func (this *domainSniffer) SaveInfo() {
 }
 
 // 获取域名的备案信息
-func (this *domainSniffer) getDomainRecordInfo(domain *utils.StDomain) string {
-	return utils.SniffDomainRecordInfo(domain)
+func (this *domainSniffer) getDomainRecordInfo(domain *StDomain) (info string) {
+	return info
 }
 
 // 扫描子域信息
 // 返回值类型为 域名切片
-func (this *domainSniffer) sniffSubDomain(domain *utils.StDomain) []utils.StDomain {
-	return utils.SniffSubDomain(domain)
+func (this *domainSniffer) sniffSubDomain(domain *StDomain) (domains []StDomain) {
+	return domains
 }
 
 // 域名端口嗅探
-func (this *domainSniffer) sniffPort(domain *utils.StDomain) []int {
+func (this *domainSniffer) sniffPort(domain *StDomain) []int {
 	return domain.SniffPort()
 }
 
 // 通过域名获取探测真实IP
-func (this *domainSniffer) sniffRealIP(domain *utils.StDomain) string {
+func (this *domainSniffer) sniffRealIP(domain *StDomain) string {
 	return domain.SniffRealIP()
 }
