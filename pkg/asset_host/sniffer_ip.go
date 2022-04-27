@@ -1,9 +1,7 @@
 // @koi
 // IP嗅探器
 // 属于嗅探器的子类，主要用于嗅探和IP相关的资源
-package sniffer
-
-import "poodle/pkg/common"
+package asset_host
 
 type ipSniffer struct {
 	// 父类
@@ -21,7 +19,7 @@ func (this *ipSniffer) SaveInfo() {
 }
 
 // 探测该IP 是否绑定了域名
-func (this *ipSniffer) sniffBindDomain(ip string) (domain common.StDomain) {
+func (this *ipSniffer) sniffBindDomain(ip string) (domain Domain) {
 	return domain
 }
 

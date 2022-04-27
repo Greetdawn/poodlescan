@@ -1,7 +1,7 @@
-package sniffer
+package asset_host
 
 // sniffer的接口类
-type iSniffer interface {
+type ISniffer interface {
 	// 开始执行嗅探的工作。
 	StartSniff()
 
