@@ -3,14 +3,16 @@
 // 属于嗅探器的子类，主要用于嗅探和IP相关的资源
 package asset_host
 
+import "fmt"
+
 type ipSniffer struct {
 	// 父类
-	sniffer Sniffer
+	//sniffer Sniffer
 }
 
 // 实现iSniffer的接口:StartSniff
 func (this *ipSniffer) StartSniff() {
-
+	fmt.Println("开始 IP 嗅探...")
 }
 
 // 实现iSniffer的接口:SaveInfo

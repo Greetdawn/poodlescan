@@ -1,6 +1,9 @@
 package asset_host
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type AssetHost struct {
 	// 源
@@ -14,16 +17,19 @@ type AssetHost struct {
 
 	// 本资产的IP地址
 	// 多个资产IP地址相同时，合并成一个资产
-	IP string
+	RealIP string
 
 	// 资产域名
 	// IsIP == true : 为IP嗅探出的对应域名
 	// IsIP == false : 为要嗅探的域名
-	Domain
+	Domain Domain
+
+	// 子域列表
+	SubDomains []Domain
 
 	// 开放的端口
 	// <int, string> <开放端口号, 对应端口信息>
-	Ports sync.Map
+	Ports []int
 
 	// 域名备案信息
 	IPC string
@@ -47,4 +53,14 @@ type AssetWeb struct {
 
 	// 特殊后缀地址文件比如.zip.xlsx后缀
 	SpecialSuffic sync.Map
+}
+
+func (this *AssetHost) ToString() {
+	fmt.Printf("SrcTarget : %s\r\n", this.SrcTarget)
+	fmt.Printf("IsIP : %t\r\n", this.IsIP)
+	fmt.Printf("RealIP : %s\r\n", this.RealIP)
+	fmt.Printf("Domain : %#v\r\n", this.Domain)
+	fmt.Printf("子域列表 : %#v\r\n", this.SubDomains)
+	fmt.Printf("Ports : %#v\r\n", this.Ports)
+	fmt.Printf("IPC : %s\r\n", this.IPC)
 }
