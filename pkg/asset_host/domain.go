@@ -1,6 +1,6 @@
-package common
+package asset_host
 
-type StDomain struct {
+type Domain struct {
 	// 域名名称，不加www，如 baidu.com
 	name string
 
@@ -9,11 +9,11 @@ type StDomain struct {
 }
 
 // 域名端口探测实现的地方
-func (this *StDomain) SniffPort() (ports []int) {
+func (this *Domain) SniffPort() (ports []int) {
 	return ports
 }
 
 // 域名端口探测实现的地方
-func (this *StDomain) SniffRealIP() (realIP string) {
+func (this *Domain) SniffRealIP() (realIP string) {
 	return realIP
 }
