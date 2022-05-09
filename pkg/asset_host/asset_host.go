@@ -56,12 +56,8 @@ type AssetWeb struct {
 	SpecialSuffic sync.Map
 }
 
-func (this *AssetHost) ToString() {
-	fmt.Printf("SrcTarget : %s\r\n", this.SrcTarget)
-	fmt.Printf("IsIP : %t\r\n", this.IsIP)
-	fmt.Printf("RealIP : %s\r\n", this.RealIP)
-	fmt.Printf("Domain : %#v\r\n", this.Domain)
-	fmt.Printf("子域列表 : %#v\r\n", this.SubDomains)
-	fmt.Printf("Ports : %#v\r\n", this.Ports)
-	// fmt.Printf("IPC : %s\r\n", this.IPC)
+func (this *AssetHost) ToString() (info string) {
+	info = fmt.Sprintf("\tSrcTarget : %s\n\tIsIP :%t\n\tRealIP : %s\n\tDomain : %#v\n\t子域列表 : %#v\n\tPorts : %#v\n\n",
+		this.SrcTarget, this.IsIP, this.RealIP, this.Domain, this.SubDomains, this.Ports)
+	return info
 }

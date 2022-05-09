@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
 )
@@ -30,7 +29,7 @@ func Parseing(controlCode int, params []string) {
 		case SNIFFER_MODULE_SINGLE_IP:
 			// 检查参数数量，应该为1个参数
 			if len(params) != 1 {
-				fmt.Println("[E] The Number of params is not 1.")
+				common.PrintErrorLog("The Number of params is not 1.")
 				return
 			}
 			// 声明一个嗅探器
@@ -44,7 +43,7 @@ func Parseing(controlCode int, params []string) {
 		case SNIFFER_MODULE_SINGLE_DOMAIN:
 			// 检查参数数量，应该为1个参数
 			if len(params) != 1 {
-				fmt.Println("[E] The Number of params is not 1.")
+				common.PrintErrorLog("The Number of params is not 1.")
 				return
 			}
 

@@ -40,14 +40,14 @@ type Sniffer struct {
 
 // 追加资产信息
 func (this *Sniffer) AppendAssetHost(asset AssetHost) {
-	fmt.Println("[I] append an asset host to the list of asset host.")
+	common.PrintInfoLog("append an asset host to the list of asset host.")
 	this.AssetHosts = append(this.AssetHosts, asset)
-	fmt.Printf("[I] the current number of asset host is %d.\n", len(this.AssetHosts))
+	common.PrintInfoLog(fmt.Sprintf("the current number of asset host is %d.", len(this.AssetHosts)))
 }
 
 // 实现iSniffer的接口:StartSniff
 func (this *Sniffer) StartIPSniff() {
-	fmt.Println("[I] start single ip sniff...")
+	common.PrintInfoLog("start single ip sniff...")
 	this.ipSniffer.super = this
 	this.ipSniffer.StartSniff()
 }
@@ -60,9 +60,8 @@ func (this *Sniffer) StartDomainSniff() {
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
-	fmt.Println("\n[I] 所有的资产主机信息：")
+	common.PrintInfoLog("所有的资产主机信息：")
 	for _, asset := range this.AssetHosts {
-		fmt.Println()
-		asset.ToString()
+		common.Print(asset.ToString())
 	}
 }

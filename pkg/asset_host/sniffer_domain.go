@@ -44,7 +44,6 @@ func (this *domainSniffer) StartSniff() {
 		// 将当前资产保存到父类的资产列表中
 		this.super.AssetHosts = append(this.super.AssetHosts, *curAssetHost)
 	}
-
 }
 
 // 实现iSniffer的接口:SaveInfo
@@ -58,7 +57,7 @@ func (this *domainSniffer) sniffSubDomain() (domains []common.Domain) {
 	var curSniffDomain = this.super.domainList[0].Name
 	fmt.Printf("当前需要嗅探的域名为：%s\r\n", curSniffDomain)
 	domains = make([]common.Domain, 1)
-	domains[1] = common.Domain{"baidu.com", "备案"}
+	domains[1] = common.Domain{Name: "baidu.com", IPC: "备案"}
 	return domains
 }
 
