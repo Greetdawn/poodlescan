@@ -10,6 +10,7 @@ type ipSniffer struct {
 
 // StartSniff 实现iSniffer的接口:StartSniff
 // 嗅探IP的信息
+// 这里是流程控制代码，一般情况下不需要更改
 func (this *ipSniffer) StartSniff() {
 	for i := 0; i < len(this.super.TargetIPs); i++ {
 		currentIP := this.super.TargetIPs[i]
@@ -34,13 +35,7 @@ func (this *ipSniffer) SaveInfo() {
 
 }
 
-// 探测该IP 是否绑定了域名
-// func (this *ipSniffer) sniffBindDomain(ip string) (domain Domain) {
-// 	domain.Name = "baidu.com"
-// 	return domain
-// }
-
-// IP端口嗅探
+// IP端口嗅探的具体实现代码。
 func (this *ipSniffer) sniffPort(ip string) (ports []int) {
 	ports = make([]int, 10)
 	ports[0] = 80
