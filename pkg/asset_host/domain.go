@@ -25,6 +25,7 @@ func (this *Domain) SniffDomainRecordInfo() (info string) {
 }
 
 // 嗅探域名的子域信息
+// 在子域探测的同时需要进行主机存活的判断，如果主机存活加到返回值中，否则丢弃
 func (this *Domain) SniffSubDomain() []Domain {
 	ds := make([]Domain, 1)
 	ds[0].Name = "baidu.sub.com"

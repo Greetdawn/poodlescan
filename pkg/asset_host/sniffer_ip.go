@@ -13,25 +13,15 @@ type ipSniffer struct {
 func (this *ipSniffer) StartSniff() {
 	for i := 0; i < len(this.super.TargetIPs); i++ {
 		currentIP := this.super.TargetIPs[i]
-		// 1. 探测域名信息
-		domain := this.sniffBindDomain(currentIP)
-		if domain.Name != "" {
-			// 此IP查询到域名信息
-			// 1.1 嗅探备案信息
-			SniffDomainRecordInfo(&domain)
-		}
-
-		// 2. 嗅探端口信息
+		// 1. 嗅探端口信息
 		ports := this.sniffPort(currentIP)
 
-		// 3. 资产信息
+		// 2. 资产信息
 		var asset AssetHost
 		// 是IP主机
 		asset.IsIP = true
 		// 设置IP
 		asset.RealIP = currentIP
-		// 设置域名信息
-		asset.Domain = domain
 		// 设置开放端口信息
 		asset.Ports = ports
 		// 添加到资产主机列表中
@@ -45,10 +35,10 @@ func (this *ipSniffer) SaveInfo() {
 }
 
 // 探测该IP 是否绑定了域名
-func (this *ipSniffer) sniffBindDomain(ip string) (domain Domain) {
-	domain.Name = "baidu.com"
-	return domain
-}
+// func (this *ipSniffer) sniffBindDomain(ip string) (domain Domain) {
+// 	domain.Name = "baidu.com"
+// 	return domain
+// }
 
 // IP端口嗅探
 func (this *ipSniffer) sniffPort(ip string) (ports []int) {
