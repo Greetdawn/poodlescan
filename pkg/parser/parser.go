@@ -3,7 +3,6 @@ package parser
 import (
 	"fmt"
 	"poodle/pkg/asset_host"
-	"strings"
 )
 
 const (
@@ -12,7 +11,7 @@ const (
 	SNIFFER_MODULE int = 1
 	// 01:100	单独IP嗅探
 	SNIFFER_MODULE_SINGLE_IP int = 100
-	// 01:200	单独IP嗅探
+	// 01:200	单独域名嗅探
 	SNIFFER_MODULE_SINGLE_DOMAIN int = 200
 )
 
@@ -22,8 +21,8 @@ const (
 // 解析器对外只暴露这个函数。
 // 这个函数解析控制码。控制码分为两个部分，前面为模块码，后面为模块字码。
 // 模块码确定接下来的控制权交给哪个模块执行，模块子码确定具体的执行流程。
-func Parseing(controlCode int, param string) {
-	params := strings.Split(param, " ")
+func Parseing(controlCode int, params []string) {
+	// params := strings.Split(param, " ")
 	switch controlCode / 10000 {
 	case SNIFFER_MODULE:
 		switch controlCode % 10000 {
