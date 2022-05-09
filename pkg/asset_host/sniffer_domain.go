@@ -33,7 +33,7 @@ func (this *domainSniffer) StartSniff() {
 		curAssetHost.Ports = append(curAssetHost.Ports, this.sniffPort(&this.super.TargetDomains[i])...)
 
 		// 嗅探域名备案信息
-		curAssetHost.IPC = this.super.TargetDomains[i].SniffDomainRecordInfo()
+		curAssetHost.Domain.IPC = this.super.TargetDomains[i].SniffDomainRecordInfo()
 
 		// 嗅探域名子域信息
 		curAssetHost.SubDomains = this.super.TargetDomains[i].SniffSubDomain()
@@ -62,6 +62,18 @@ func (this *domainSniffer) sniffSubDomain() (domains []Domain) {
 // 通过域名嗅探端口
 func (this *domainSniffer) sniffPort(domain *Domain) []int {
 	return domain.SniffPort()
+}
+
+// 获取域名的备案信息
+// 将获取到的信息保存到传入的域名结构体重
+// 返回值为嗅探到的备案信息。
+func SniffDomainRecordInfo(domain *Domain) (info string) {
+	// todo 通过域名嗅探备案信息
+	info = "备案信息"
+	// 写入Domain结构体中
+	domain.IPC = info
+	// 返回嗅探的备案信息，一般情况下不用接收
+	return info
 }
 
 // 通过域名获取探测真实IP

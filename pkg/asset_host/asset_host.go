@@ -32,7 +32,7 @@ type AssetHost struct {
 	Ports []int
 
 	// 域名备案信息
-	IPC string
+	// IPC string
 
 	// web目标的结果
 	AssetWeb
@@ -62,5 +62,5 @@ func (this *AssetHost) ToString() {
 	fmt.Printf("Domain : %#v\r\n", this.Domain)
 	fmt.Printf("子域列表 : %#v\r\n", this.SubDomains)
 	fmt.Printf("Ports : %#v\r\n", this.Ports)
-	fmt.Printf("IPC : %s\r\n", this.IPC)
+	// fmt.Printf("IPC : %s\r\n", this.IPC)
 }

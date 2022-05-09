@@ -5,7 +5,7 @@ type Domain struct {
 	Name string
 
 	// 域名备案信息
-	DomainRecordInfo string
+	IPC string
 }
 
 // 域名端口探测实现的地方
@@ -28,6 +28,6 @@ func (this *Domain) SniffDomainRecordInfo() (info string) {
 func (this *Domain) SniffSubDomain() []Domain {
 	ds := make([]Domain, 1)
 	ds[0].Name = "baidu.sub.com"
-	ds[0].DomainRecordInfo = "京 2022"
+	ds[0].IPC = "京 2022"
 	return ds
 }
