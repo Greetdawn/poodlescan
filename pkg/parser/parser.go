@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"poodle/pkg/asset_host"
+	"poodle/pkg/common"
 )
 
 const (
@@ -50,7 +51,7 @@ func Parseing(controlCode int, params []string) {
 			sniffer := asset_host.Sniffer{}
 			// 解析输入参数
 			// 现在假设要嗅探 baidu.com
-			sniffer.TargetDomains = append(sniffer.TargetDomains, asset_host.Domain{Name: params[0]})
+			sniffer.TargetDomains = append(sniffer.TargetDomains, common.Domain{Name: params[0]})
 			// 开始嗅探
 			sniffer.StartDomainSniff()
 			// 打印资产信息

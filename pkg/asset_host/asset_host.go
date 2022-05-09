@@ -2,6 +2,7 @@ package asset_host
 
 import (
 	"fmt"
+	"poodle/pkg/common"
 	"sync"
 )
 
@@ -22,10 +23,10 @@ type AssetHost struct {
 	// 资产域名
 	// IsIP == true : 为IP嗅探出的对应域名
 	// IsIP == false : 为要嗅探的域名
-	Domain Domain
+	Domain common.Domain
 
 	// 子域列表
-	SubDomains []Domain
+	SubDomains []common.Domain
 
 	// 开放的端口
 	// <int, string> <开放端口号, 对应端口信息>

@@ -1,6 +1,9 @@
 package asset_host
 
-import "fmt"
+import (
+	"fmt"
+	"poodle/pkg/common"
+)
 
 // @koi
 // 域名嗅探器
@@ -10,7 +13,7 @@ type domainSniffer struct {
 	super *Sniffer
 
 	// 所有域名列表（本域名+子域名）
-	domainList []Domain
+	domainList []common.Domain
 }
 
 // 实现iSniffer的接口:StartSniff
@@ -51,23 +54,23 @@ func (this *domainSniffer) SaveInfo() {
 
 // 扫描子域信息
 // 返回值类型为 域名切片
-func (this *domainSniffer) sniffSubDomain() (domains []Domain) {
+func (this *domainSniffer) sniffSubDomain() (domains []common.Domain) {
 	var curSniffDomain = this.super.domainList[0].Name
 	fmt.Printf("当前需要嗅探的域名为：%s\r\n", curSniffDomain)
-	domains = make([]Domain, 1)
-	domains[1] = Domain{"baidu.com", "备案"}
+	domains = make([]common.Domain, 1)
+	domains[1] = common.Domain{"baidu.com", "备案"}
 	return domains
 }
 
 // 通过域名嗅探端口
-func (this *domainSniffer) sniffPort(domain *Domain) []int {
+func (this *domainSniffer) sniffPort(domain *common.Domain) []int {
 	return domain.SniffPort()
 }
 
 // 获取域名的备案信息
 // 将获取到的信息保存到传入的域名结构体重
 // 返回值为嗅探到的备案信息。
-func SniffDomainRecordInfo(domain *Domain) (info string) {
+func SniffDomainRecordInfo(domain *common.Domain) (info string) {
 	// todo 通过域名嗅探备案信息
 	info = "备案信息"
 	// 写入Domain结构体中
@@ -77,7 +80,7 @@ func SniffDomainRecordInfo(domain *Domain) (info string) {
 }
 
 // 通过域名获取探测真实IP
-func (this *domainSniffer) sniffRealIP(domain *Domain) string {
+func (this *domainSniffer) sniffRealIP(domain *common.Domain) string {
 	var curSniffDomain = domain.Name
 	fmt.Printf("当前需要嗅探的域名为：%s\r\n", curSniffDomain)
 	return "162.27.12.34"

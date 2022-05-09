@@ -1,4 +1,4 @@
-package asset_host
+package common
 
 type Domain struct {
 	// 域名名称，不加www，如 baidu.com

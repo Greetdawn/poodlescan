@@ -3,6 +3,10 @@
 // 属于嗅探器的子类，主要用于嗅探和IP相关的资源
 package asset_host
 
+import (
+	"poodle/pkg/common"
+)
+
 type ipSniffer struct {
 	// 父类
 	super *Sniffer
@@ -14,10 +18,17 @@ type ipSniffer struct {
 func (this *ipSniffer) StartSniff() {
 	for i := 0; i < len(this.super.TargetIPs); i++ {
 		currentIP := this.super.TargetIPs[i]
-		// 1. 嗅探端口信息
+		// 1. 通过IP嗅探主机存活情况
+		if !common.IsAlivedOfHostByIP(currentIP) {
+			// 主机不存活
+			common.PrintInfoLog(currentIP + " 不存活")
+			return
+		}
+
+		// 2. 嗅探端口信息
 		ports := this.sniffPort(currentIP)
 
-		// 2. 资产信息
+		// 3. 资产信息
 		var asset AssetHost
 		// 是IP主机
 		asset.IsIP = true

@@ -1,6 +1,9 @@
 package asset_host
 
-import "fmt"
+import (
+	"fmt"
+	"poodle/pkg/common"
+)
 
 // sniffer的接口类
 type ISniffer interface {
@@ -23,7 +26,7 @@ type Sniffer struct {
 	TargetIPs []string
 
 	// 需要嗅探的域名列表
-	TargetDomains []Domain
+	TargetDomains []common.Domain
 
 	// 域名扫描器
 	domainSniffer
