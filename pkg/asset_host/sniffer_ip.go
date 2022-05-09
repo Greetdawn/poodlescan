@@ -22,22 +22,27 @@ func (this *ipSniffer) StartSniff() {
 		if !common.IsAlivedOfHostByIP(currentIP) {
 			// 主机不存活
 			common.PrintInfoLog(currentIP + " 不存活")
-			return
+			// 添加到不存活资产主机列表中
+			var asset AssetHost
+			asset.IsAlived = false
+			this.super.AppendDiedAssetHost(asset)
+		} else {
+			// 主机存活情况
+			// 2. 嗅探端口信息
+			ports := this.sniffPort(currentIP)
+			// 3. 资产信息
+			var asset AssetHost
+			// 是IP主机
+			asset.IsIP = true
+			// 设置IP
+			asset.RealIP = currentIP
+			// 设置IP存活
+			asset.IsAlived = true
+			// 设置开放端口信息
+			asset.Ports = ports
+			// 添加到资产主机列表中
+			this.super.AppendAlivedAssetHost(asset)
 		}
-
-		// 2. 嗅探端口信息
-		ports := this.sniffPort(currentIP)
-
-		// 3. 资产信息
-		var asset AssetHost
-		// 是IP主机
-		asset.IsIP = true
-		// 设置IP
-		asset.RealIP = currentIP
-		// 设置开放端口信息
-		asset.Ports = ports
-		// 添加到资产主机列表中
-		this.super.AppendAssetHost(asset)
 	}
 }
 

@@ -6,6 +6,9 @@ type Domain struct {
 
 	// 域名备案信息
 	IPC string
+
+	// 本域名是否存活
+	IsAlived bool
 }
 
 // 域名端口探测实现的地方
@@ -19,7 +22,7 @@ func (this *Domain) SniffRealIP() (realIP string) {
 }
 
 // 获取域名的备案信息
-func (this *Domain) SniffDomainRecordInfo() (info string) {
+func (this *Domain) SniffIPC() (info string) {
 	info = "备案信息"
 	return info
 }
@@ -31,4 +34,9 @@ func (this *Domain) SniffSubDomain() []Domain {
 	ds[0].Name = "baidu.sub.com"
 	ds[0].IPC = "京 2022"
 	return ds
+}
+
+// 嗅探域名主机是否存活
+func (this *Domain) SniffDomainAlive() bool {
+	return IsAlivedOfHostByDomain(*this)
 }

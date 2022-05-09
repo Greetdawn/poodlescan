@@ -18,13 +18,10 @@ type domainSniffer struct {
 
 // 实现iSniffer的接口:StartSniff
 func (this *domainSniffer) StartSniff() {
-	fmt.Println("开始 域名嗅探...")
-
-	fmt.Println(len(this.super.TargetDomains))
-
+	common.PrintInfoLog("start sniff domain...")
 	for i := 0; i < len(this.super.TargetDomains); i++ {
 		// 创建一个资产
-		var curAssetHost = new(AssetHost)
+		var curAssetHost AssetHost
 
 		// 复制域名信息
 		curAssetHost.Domain = this.super.TargetDomains[i]
@@ -35,14 +32,11 @@ func (this *domainSniffer) StartSniff() {
 		// 通过域名探测开放的端口号
 		curAssetHost.Ports = append(curAssetHost.Ports, this.sniffPort(&this.super.TargetDomains[i])...)
 
-		// 嗅探域名备案信息
-		curAssetHost.Domain.IPC = this.super.TargetDomains[i].SniffDomainRecordInfo()
-
 		// 嗅探域名子域信息
 		curAssetHost.SubDomains = this.super.TargetDomains[i].SniffSubDomain()
 
 		// 将当前资产保存到父类的资产列表中
-		this.super.AssetHosts = append(this.super.AssetHosts, *curAssetHost)
+		this.super.AppendAlivedAssetHost(curAssetHost)
 	}
 }
 

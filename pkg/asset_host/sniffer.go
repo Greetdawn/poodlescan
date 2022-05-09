@@ -35,14 +35,24 @@ type Sniffer struct {
 	ipSniffer
 
 	// 嗅探的资产结果
-	AssetHosts []AssetHost
+	AlivedAssetHosts []AssetHost
+
+	// 不存活的资产结果
+	DiedAssetHosts []AssetHost
 }
 
-// 追加资产信息
-func (this *Sniffer) AppendAssetHost(asset AssetHost) {
-	common.PrintInfoLog("append an asset host to the list of asset host.")
-	this.AssetHosts = append(this.AssetHosts, asset)
-	common.PrintInfoLog(fmt.Sprintf("the current number of asset host is %d.", len(this.AssetHosts)))
+// 追加存活资产信息
+func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
+	common.PrintInfoLog("append an asset host to the alived list of asset host.")
+	this.AlivedAssetHosts = append(this.AlivedAssetHosts, asset)
+	common.PrintInfoLog(fmt.Sprintf("the current number of asset host is %d.", len(this.AlivedAssetHosts)))
+}
+
+// 追加不存活资产信息
+func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
+	common.PrintInfoLog("append an asset host to the died list of asset host.")
+	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
+	common.PrintInfoLog(fmt.Sprintf("the current number of asset host is %d.", len(this.DiedAssetHosts)))
 }
 
 // 实现iSniffer的接口:StartSniff
@@ -54,6 +64,7 @@ func (this *Sniffer) StartIPSniff() {
 
 // StartDomainSniff: 域名嗅探器
 func (this *Sniffer) StartDomainSniff() {
+	common.PrintInfoLog("start single domain sniff...")
 	this.domainSniffer.super = this
 	this.domainSniffer.StartSniff()
 }
@@ -61,7 +72,10 @@ func (this *Sniffer) StartDomainSniff() {
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
 	common.PrintInfoLog("所有的资产主机信息：")
-	for _, asset := range this.AssetHosts {
+	for _, asset := range this.AlivedAssetHosts {
+		common.Print(asset.ToString())
+	}
+	for _, asset := range this.DiedAssetHosts {
 		common.Print(asset.ToString())
 	}
 }

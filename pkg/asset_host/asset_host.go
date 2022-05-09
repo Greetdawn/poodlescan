@@ -21,9 +21,14 @@ type AssetHost struct {
 	RealIP string
 
 	// 资产域名
-	// IsIP == true : 为IP嗅探出的对应域名
-	// IsIP == false : 为要嗅探的域名
+	// IsIP == true 	:RealIP嗅探出的对应域名
+	// IsIP == false 	: 为要嗅探的域名
 	Domain common.Domain
+
+	// 存活情况
+	// IsIP == true 	: RealIP存活情况
+	// IsIP == false 	: 无效
+	IsAlived bool
 
 	// 子域列表
 	SubDomains []common.Domain
@@ -57,7 +62,7 @@ type AssetWeb struct {
 }
 
 func (this *AssetHost) ToString() (info string) {
-	info = fmt.Sprintf("\tSrcTarget : %s\n\tIsIP :%t\n\tRealIP : %s\n\tDomain : %#v\n\t子域列表 : %#v\n\tPorts : %#v\n\n",
-		this.SrcTarget, this.IsIP, this.RealIP, this.Domain, this.SubDomains, this.Ports)
+	info = fmt.Sprintf("\tSrcTarget : %s\n\tIsIP :%t\n\tRealIP : %s\n\tDomain : %#v\n\tIP存活情况：%t\n\t子域列表 : %#v\n\tPorts : %#v\n\n",
+		this.SrcTarget, this.IsIP, this.RealIP, this.Domain, this.IsAlived, this.SubDomains, this.Ports)
 	return info
 }
