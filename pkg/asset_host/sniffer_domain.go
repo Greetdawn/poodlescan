@@ -3,6 +3,7 @@ package asset_host
 import (
 	"fmt"
 	"poodle/pkg/common"
+	"poodle/pkg/logger"
 )
 
 // @koi
@@ -18,7 +19,7 @@ type domainSniffer struct {
 
 // 实现iSniffer的接口:StartSniff
 func (this *domainSniffer) StartSniff() {
-	common.PrintInfoLog("start sniff domain...")
+	logger.OutputInfo("domain sniffer", "start sniff domain...")
 	for i := 0; i < len(this.super.TargetDomains); i++ {
 		// 创建一个资产
 		var alivedAsset AssetHost

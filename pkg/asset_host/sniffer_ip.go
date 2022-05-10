@@ -5,6 +5,7 @@ package asset_host
 
 import (
 	"poodle/pkg/common"
+	"poodle/pkg/logger"
 )
 
 type ipSniffer struct {
@@ -21,7 +22,7 @@ func (this *ipSniffer) StartSniff() {
 		// 1. 通过IP嗅探主机存活情况
 		if !common.IsHostAlived(currentIP) {
 			// 主机不存活
-			common.PrintInfoLog(currentIP + " 不存活")
+			logger.OutputInfo("ip sniffer", currentIP+" 不存活")
 			// 添加到不存活资产主机列表中
 			var asset AssetHost
 			asset.IsAlived = false
