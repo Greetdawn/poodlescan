@@ -71,10 +71,11 @@ func (this *Sniffer) StartDomainSniff() {
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
-	common.PrintInfoLog("所有的资产主机信息：")
+	common.PrintInfoLog("资产主机信息：")
 	for _, asset := range this.AlivedAssetHosts {
 		common.Print(asset.ToString())
 	}
+	common.PrintInfoLog("不存活资产主机信息：")
 	for _, asset := range this.DiedAssetHosts {
 		common.Print(asset.ToString())
 	}

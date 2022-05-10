@@ -19,7 +19,7 @@ func (this *ipSniffer) StartSniff() {
 	for i := 0; i < len(this.super.TargetIPs); i++ {
 		currentIP := this.super.TargetIPs[i]
 		// 1. 通过IP嗅探主机存活情况
-		if !common.IsAlivedOfHostByIP(currentIP) {
+		if !common.IsHostAlived(currentIP) {
 			// 主机不存活
 			common.PrintInfoLog(currentIP + " 不存活")
 			// 添加到不存活资产主机列表中

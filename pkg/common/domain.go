@@ -38,5 +38,5 @@ func (this *Domain) SniffSubDomain() []Domain {
 
 // 嗅探域名主机是否存活
 func (this *Domain) SniffDomainAlive() bool {
-	return IsAlivedOfHostByDomain(*this)
+	return IsHostAlived(this.Name)
 }

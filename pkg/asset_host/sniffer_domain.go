@@ -21,22 +21,30 @@ func (this *domainSniffer) StartSniff() {
 	common.PrintInfoLog("start sniff domain...")
 	for i := 0; i < len(this.super.TargetDomains); i++ {
 		// 创建一个资产
-		var curAssetHost AssetHost
+		var alivedAsset AssetHost
+		// 1. 设置不是IP
+		alivedAsset.IsIP = false
+		// 2. 复制域名信息。如果不进行真实IP的探测，这里将是资产的主键
+		alivedAsset.Domain = this.super.TargetDomains[i]
+		// 3. 嗅探主域备案信息
 
-		// 复制域名信息
-		curAssetHost.Domain = this.super.TargetDomains[i]
+		// 4. 嗅探域名子域信息
+		subDomains := this.super.TargetDomains[i].SniffSubDomain()
+		diedAsset := alivedAsset
+		for _, v := range subDomains {
+			if v.IsAlived {
+				alivedAsset.SubDomains = append(alivedAsset.SubDomains, v)
+			} else {
+				diedAsset.SubDomains = append(diedAsset.SubDomains, v)
+			}
+		}
 
-		// 嗅探域名真实IP
-		curAssetHost.RealIP = this.sniffRealIP(&this.super.TargetDomains[i])
-
-		// 通过域名探测开放的端口号
-		curAssetHost.Ports = append(curAssetHost.Ports, this.sniffPort(&this.super.TargetDomains[i])...)
-
-		// 嗅探域名子域信息
-		curAssetHost.SubDomains = this.super.TargetDomains[i].SniffSubDomain()
-
-		// 将当前资产保存到父类的资产列表中
-		this.super.AppendAlivedAssetHost(curAssetHost)
+		// 保存存活资产列表
+		this.super.AppendAlivedAssetHost(alivedAsset)
+		// 保存不存活资产列表
+		if len(diedAsset.SubDomains) > 0 {
+			this.super.AppendDiedAssetHost(diedAsset)
+		}
 	}
 }
 
@@ -46,10 +54,8 @@ func (this *domainSniffer) SaveInfo() {
 }
 
 // 扫描子域信息
-// 返回值类型为 域名切片
+// 需要同步探测每个子域是否存活
 func (this *domainSniffer) sniffSubDomain() (domains []common.Domain) {
-	var curSniffDomain = this.super.domainList[0].Name
-	fmt.Printf("当前需要嗅探的域名为：%s\r\n", curSniffDomain)
 	domains = make([]common.Domain, 1)
 	domains[1] = common.Domain{Name: "baidu.com", IPC: "备案"}
 	return domains

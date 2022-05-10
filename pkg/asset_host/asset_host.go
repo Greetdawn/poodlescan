@@ -10,7 +10,7 @@ type AssetHost struct {
 	// 源
 	// IP或者域名
 	// 主要描述输入信息
-	SrcTarget string
+	//SrcTarget string
 
 	// 是否是IP
 	// 资产嗅探主要分两个分支，这里表明这个资产是通过IP或者域名嗅探
@@ -62,7 +62,7 @@ type AssetWeb struct {
 }
 
 func (this *AssetHost) ToString() (info string) {
-	info = fmt.Sprintf("\tSrcTarget : %s\n\tIsIP :%t\n\tRealIP : %s\n\tDomain : %#v\n\tIP存活情况：%t\n\t子域列表 : %#v\n\tPorts : %#v\n\n",
-		this.SrcTarget, this.IsIP, this.RealIP, this.Domain, this.IsAlived, this.SubDomains, this.Ports)
+	info = fmt.Sprintf("\tIsIP :%t\n\tRealIP : %s\n\tDomain : %#v\n\tIP存活情况：%t\n\t子域列表 : %#v\n\tPorts : %#v\n",
+		this.IsIP, this.RealIP, this.Domain, this.IsAlived, this.SubDomains, this.Ports)
 	return info
 }
