@@ -37,7 +37,7 @@ func Parseing(controlCode uint32, params []string) {
 		case SNIFFER_MODULE_SINGLE_IP:
 			// 检查参数数量，应该为1个参数
 			if len(params) != 1 {
-				logger.OutputError("Parseing", "The Number of params is not 1.")
+				logger.LogError("Parseing", "The Number of params is not 1.")
 				return
 			}
 			// 声明一个嗅探器
@@ -51,7 +51,7 @@ func Parseing(controlCode uint32, params []string) {
 		case SNIFFER_MODULE_SINGLE_DOMAIN:
 			// 检查参数数量，应该为1个参数
 			if len(params) != 1 {
-				logger.OutputError("Parseing", "The Number of params is not 1.")
+				logger.LogError("Parseing", "The Number of params is not 1.")
 				return
 			}
 
