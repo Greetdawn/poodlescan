@@ -1,7 +1,9 @@
 package main
 
+import "poodle/pkg/common"
+
 func main() {
-	IsHostAlived("123")
+	common.IsHostAlived("")
 	// 单IP嗅探
 	// 	parser.Parseing(10010000, []string{"192.168.1.1"})
 
