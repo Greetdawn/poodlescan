@@ -19,7 +19,7 @@ type domainSniffer struct {
 
 // 实现iSniffer的接口:StartSniff
 func (this *domainSniffer) StartSniff() {
-	logger.OutputInfo("domain sniffer", "start sniff domain...")
+	logger.LogInfo("domain sniffer", "start sniff domain...")
 	for i := 0; i < len(this.super.TargetDomains); i++ {
 		// 创建一个资产
 		var alivedAsset AssetHost

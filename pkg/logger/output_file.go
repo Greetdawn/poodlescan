@@ -9,7 +9,7 @@ import (
 var LoggerFilePt *os.File
 
 func init() {
-	OutputInfo("logger", "Init logger module")
+	LogInfo("logger", "Init logger module")
 	// 这里创建文件
 	// LoggerFilePt, err := os.Create("log.txt")
 }

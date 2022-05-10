@@ -44,40 +44,40 @@ type Sniffer struct {
 
 // 追加存活资产信息
 func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
-	logger.OutputInfo("sniffer", "append an asset host to the alived list of asset host.")
+	logger.LogInfo("sniffer", "append an asset host to the alived list of asset host.")
 	this.AlivedAssetHosts = append(this.AlivedAssetHosts, asset)
-	logger.OutputInfo("sniffer", fmt.Sprintf("the current number of asset host is %d.", len(this.AlivedAssetHosts)))
+	logger.LogInfo("sniffer", fmt.Sprintf("the current number of asset host is %d.", len(this.AlivedAssetHosts)))
 }
 
 // 追加不存活资产信息
 func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
-	logger.OutputInfo("sniffer", "append an asset host to the died list of asset host.")
+	logger.LogInfo("sniffer", "append an asset host to the died list of asset host.")
 	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
-	logger.OutputInfo("sniffer", fmt.Sprintf("the current number of asset host is %d.", len(this.DiedAssetHosts)))
+	logger.LogInfo("sniffer", fmt.Sprintf("the current number of asset host is %d.", len(this.DiedAssetHosts)))
 }
 
 // 实现iSniffer的接口:StartSniff
 func (this *Sniffer) StartIPSniff() {
-	logger.OutputInfo("sniffer", "start single ip sniff...")
+	logger.LogInfo("sniffer", "start single ip sniff...")
 	this.ipSniffer.super = this
 	this.ipSniffer.StartSniff()
 }
 
 // StartDomainSniff: 域名嗅探器
 func (this *Sniffer) StartDomainSniff() {
-	logger.OutputInfo("sniffer", "start single domain sniff...")
+	logger.LogInfo("sniffer", "start single domain sniff...")
 	this.domainSniffer.super = this
 	this.domainSniffer.StartSniff()
 }
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
-	logger.OutputInfo("sniffer", "资产主机信息：")
+	logger.LogInfo("sniffer", "资产主机信息：")
 	for _, asset := range this.AlivedAssetHosts {
-		logger.OutputNoFormat(asset.ToString())
+		logger.LogNoFormat(asset.ToString())
 	}
-	logger.OutputInfo("sniffer", "不存活资产主机信息：")
+	logger.LogInfo("sniffer", "不存活资产主机信息：")
 	for _, asset := range this.DiedAssetHosts {
-		logger.OutputNoFormat(asset.ToString())
+		logger.LogNoFormat(asset.ToString())
 	}
 }
