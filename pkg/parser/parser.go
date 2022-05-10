@@ -14,9 +14,9 @@ const (
 	SNIFFER_MODULE_SINGLE_IP uint32 = 10000
 	// 01:200	单独域名嗅探
 	SNIFFER_MODULE_SINGLE_DOMAIN uint32 = 20000
-)
 
-// 02:	漏洞扫描模块
+	// 02:	漏洞扫描模块
+)
 
 // Parseing 解析命令行
 // 解析器对外只暴露这个函数。

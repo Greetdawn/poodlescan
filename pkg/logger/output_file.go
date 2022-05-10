@@ -29,7 +29,7 @@ func FoutputInfo(tag, log string) {
 	fmt.Printf("[INFO] [%s] %s %s\n", tag, time.Now().Format("2006-01-02 15:04:05"), log)
 }
 
-// 打印INFO日志
+// 打印Error日志
 func FoutputError(tag, log string) {
 	fmt.Printf("[ERROR] [%s] %s %s\n", tag, time.Now().Format("2006-01-02 15:04:05"), log)
 }
