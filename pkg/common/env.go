@@ -3,9 +3,6 @@ package common
 import "runtime"
 
 // 判断当前程序运行的系统类型
-func JU() {
-
-}
 func JudgeSystemType() string {
 	winenv := "cmd"
 	linuxenv := "/bin/bash"
