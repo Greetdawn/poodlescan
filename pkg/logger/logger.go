@@ -19,6 +19,11 @@ func LogInfo(tag, log string) {
 	OutputInfo(tag, log)
 }
 
+// 打印Warning日志
+func LogWarning(tag, log string) {
+	OutputWarning(tag, log)
+}
+
 // 打印INFO日志
 func LogError(tag, log string) {
 	OutputError(tag, log)

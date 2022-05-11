@@ -22,6 +22,7 @@ func OutputInfo(tag, log string) {
 	fmt.Print(fmt.Sprintf("[INFO] [%s] %s %s\n", tag, time.Now().Format("2006-01-02 15:04:05"), log))
 }
 
+// 打印Warning日志
 func OutputWarning(tag, log string) {
 	fmt.Print(Yellow(fmt.Sprintf("[WARNING] [%s] %s %s\n", tag, time.Now().Format("2006-01-02 15:04:05"), log)))
 }
