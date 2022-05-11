@@ -16,6 +16,7 @@ func (c *CMDPara) CMDUserInputParse() {
 	// 接收参数：10.1.0.0/16或者域名
 	flag.StringVar(&c.UserInputTargetString, "t", "", "设置扫描目标")
 	flag.BoolVar(&c.BreakPingScan, "Pn", false, "跳过ping扫")
+	flag.IntVar(&c.Threads, "T", 5, "设置并发，允许同时扫描几个目标")
 	// todo Paras其他参数
 	flag.Parse()
 	tmpSlice, isIP := targetParse(c.UserInputTargetString)
@@ -34,7 +35,7 @@ func (c *CMDPara) CMDUserInputParse() {
 // http://www.baidu.com
 // www.baidu.com
 func targetParse(targetInput string) (getTarget []string, isIP bool) {
-	isIP = false
+
 	_, _, err := net.ParseCIDR(targetInput)
 	if err != nil {
 		tmp := net.ParseIP(targetInput)
@@ -49,7 +50,7 @@ func targetParse(targetInput string) (getTarget []string, isIP bool) {
 			return append(getTarget, tmp.String()), true
 		}
 	} else { // 是ip段,xxx.xxx.xxx.xxx/xx
-		return cidrHosts(targetInput), isIP
+		return cidrHosts(targetInput), true
 	}
 }
 

@@ -9,11 +9,18 @@ import (
 	"encoding/binary"
 	"net"
 	"os/exec"
+	cmdparser "poodle/internal/cmd_parser"
 	"poodle/pkg/logger"
 	"runtime"
 	"strings"
 	"time"
 )
+
+func ScanHostAlived(c cmdparser.TargetInput) bool {
+
+	return IsHostAlived(c.Target)
+
+}
 
 // 判断主机是否存活
 // host可以传入IP、域名

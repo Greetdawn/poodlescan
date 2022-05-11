@@ -1,26 +1,42 @@
 package main
 
 import (
-	"fmt"
 	cmdparser "poodle/internal/cmd_parser"
+	"poodle/pkg/common"
+	"sync"
 )
+
+var WG sync.WaitGroup
 
 func main() {
 
+	// 初始化参数
 	CmdParas := cmdparser.CMDParseInit()
+	// 解析命令行参数
 	CmdParas.CMDUserInputParse()
-	fmt.Println(CmdParas)
+	//fmt.Println(CmdParas.IpList)
 
-	// 单独调试
-	// temp := "192.168.15."
-	// for i := 0; i <= 255; i++ {
-	// 	ip := temp + strconv.Itoa(i)
-	// 	common.IsHostAlived(ip)
-	// }
+	// 生成目标
+	CmdParas.TargetChan = make(chan cmdparser.TargetInput)
+	WG.Add(1)
+	go func() {
+		CmdParas.ProduceTargets()
+		close(CmdParas.TargetChan)
+		WG.Done()
+	}()
 
-	// 单IP嗅探
-	// parser.Parseing(10010000, []string{"192.168.1.1", "ssd"})
+	// 全局并发控制
 
-	// 单域名嗅探测试
-	// parser.Parseing(10020000, []string{"baidu.com"})
+	for i := 0; i <= CmdParas.Threads; i++ {
+		for targetTest := range CmdParas.TargetChan {
+			WG.Add(1)
+			go func(targetTest cmdparser.TargetInput) {
+				common.ScanHostAlived(targetTest)
+				WG.Done()
+			}(targetTest)
+		}
+	}
+
+	WG.Wait()
+
 }

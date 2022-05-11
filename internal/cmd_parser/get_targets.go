@@ -15,5 +15,22 @@ var (
 // 需要进行合法性检测，确定目标是正确输入
 // 最终结果是纯IP，或者纯域名(不包含协议，比如http)
 // 另外全局并发控制从此处开始
-func (CMDPara) GetTargets(CMDParas *CMDPara) {
+func (c *CMDPara) ProduceTargets() {
+	wg.Add(1)
+	go produceIPSliceAndDomainSlice(c)
+	wg.Wait()
+}
+
+func produceIPSliceAndDomainSlice(c *CMDPara) {
+	defer wg.Done()
+	var tmpSlice []TargetInput
+	for _, v := range c.IpList {
+		tmpSlice = append(tmpSlice, TargetInput{IsIP: true, Target: v})
+	}
+	for _, v := range c.DomainList {
+		tmpSlice = append(tmpSlice, TargetInput{IsIP: false, Target: v})
+	}
+	for _, v := range tmpSlice {
+		c.TargetChan <- v
+	}
 }
