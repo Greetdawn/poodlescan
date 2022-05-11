@@ -9,7 +9,7 @@ import (
 func TestMain(m *testing.M) {
 
 	cmdPars := cmdinit.CMDParseInit()
-	cmdPars.CMDUserInputParse(cmdPars)
+	cmdPars.CMDUserInputParse()
 	fmt.Println(cmdPars.IsPingScan)
 	fmt.Println(cmdPars.UserInputTargetString)
 	//m.Run()

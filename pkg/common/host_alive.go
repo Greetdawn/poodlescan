@@ -36,8 +36,8 @@ func IsHostAlived(host string) bool {
 
 var (
 	BufferByteMax           = 65535
-	timeout       int64     = 120 //120毫秒
-	command       *exec.Cmd       //命令执行
+	timeout       int64     = 1200 //1200毫秒
+	command       *exec.Cmd        //命令执行
 )
 
 // 构造ICMP数据包格式
