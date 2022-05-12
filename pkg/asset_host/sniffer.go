@@ -44,40 +44,40 @@ type Sniffer struct {
 
 // 追加存活资产信息
 func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
-	logger.LogInfo("sniffer", "append an asset host to the alived list of asset host.")
+	logger.LogInfo("append an asset host to the alived list of asset host.", logger.LOG_TERMINAL_FILE)
 	this.AlivedAssetHosts = append(this.AlivedAssetHosts, asset)
-	logger.LogInfo("sniffer", fmt.Sprintf("the current number of asset host is %d.", len(this.AlivedAssetHosts)))
+	logger.LogInfo(fmt.Sprintf("the current number of asset host is %d.", len(this.AlivedAssetHosts)), logger.LOG_TERMINAL_FILE)
 }
 
 // 追加不存活资产信息
 func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
-	logger.LogInfo("sniffer", "append an asset host to the died list of asset host.")
+	logger.LogInfo("append an asset host to the died list of asset host.", logger.LOG_TERMINAL_FILE)
 	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
-	logger.LogInfo("sniffer", fmt.Sprintf("the current number of asset host is %d.", len(this.DiedAssetHosts)))
+	logger.LogInfo(fmt.Sprintf("the current number of asset host is %d.", len(this.DiedAssetHosts)), logger.LOG_TERMINAL_FILE)
 }
 
 // 实现iSniffer的接口:StartSniff
 func (this *Sniffer) StartIPSniff() {
-	logger.LogInfo("sniffer", "start single ip sniff...")
+	logger.LogInfo("start single ip sniff...", logger.LOG_TERMINAL_FILE)
 	this.ipSniffer.super = this
 	this.ipSniffer.StartSniff()
 }
 
 // StartDomainSniff: 域名嗅探器
 func (this *Sniffer) StartDomainSniff() {
-	logger.LogInfo("sniffer", "start single domain sniff...")
+	logger.LogInfo("start single domain sniff...", logger.LOG_TERMINAL_FILE)
 	this.domainSniffer.super = this
 	this.domainSniffer.StartSniff()
 }
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
-	logger.LogInfo("sniffer", "资产主机信息：")
+	logger.LogInfo("资产主机信息：", logger.LOG_TERMINAL_FILE)
 	for _, asset := range this.AlivedAssetHosts {
-		logger.LogNoFormat(asset.ToString())
+		logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
 	}
-	logger.LogInfo("sniffer", "不存活资产主机信息：")
+	logger.LogInfo("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
 	for _, asset := range this.DiedAssetHosts {
-		logger.LogNoFormat(asset.ToString())
+		logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
 	}
 }

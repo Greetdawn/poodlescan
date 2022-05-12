@@ -1,0 +1,22 @@
+[2022-05-12 12:15:34]	[INFO]  	logger/logger.go:101	start single ip sniff...
+[2022-05-12 12:15:34]	[INFO]  	logger/logger.go:101	append an asset host to the alived list of asset host.
+[2022-05-12 12:15:34]	[INFO]  	logger/logger.go:101	the current number of asset host is 1.
+[2022-05-12 12:15:34]	[INFO]  	logger/logger.go:101	资产主机信息：
+[2022-05-12 12:15:34]	[INFO]  	logger/logger.go:124		IsIP :true
+	RealIP : 192.168.1.1
+	Domain : common.Domain{Name:"", IPC:"", IsAlived:false}
+	IP存活情况：true
+	子域列表 : []common.Domain(nil)
+	Ports : []int{80, 81, 8080, 0, 0, 0, 0, 0, 0, 0}
+
+[2022-05-12 12:15:34]	[INFO]  	logger/logger.go:101	不存活资产主机信息：
+[2022-05-12 12:19:38]	[ERROR] 	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 12:28:15]	[ERROR] 	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 12:40:34]	[ERROR] 	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 12:41:12]	[ERROR] 	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 12:43:32]	[ERROR] 	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 12:46:05]	[ERROR] 	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 13:03:25]	[WARN]  	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 13:03:25]	[ERROR] 	logger/logger.go:126	The Number of params is not 1.
+[2022-05-12 13:04:07]	[WARN]  	logger/logger.go:113	The Number of params is not 1.
+[2022-05-12 13:04:07]	[ERROR] 	logger/logger.go:126	The Number of params is not 1.
