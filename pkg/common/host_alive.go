@@ -34,15 +34,15 @@ func IsDomainAlived(host string) bool {
 func IsHostAlived(host string) bool {
 	// 通过ICMP方法判断当前主机是否存活
 	if Icmp(host) {
-		logger.LogInfo("JudgeHost", "目标主机: "+host+" 存活")
+		logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
 		return true
 	} else {
 		// 使用系统本机ping判断当前主机是否存活
 		if Ping(host) {
-			logger.LogInfo("JudgeHost", "目标主机: "+host+" 存活")
+			logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
 			return true
 		} else {
-			logger.LogWarning("JudgeHost", "目标主机: "+host+" 未存活")
+			logger.LogWarn("目标主机: "+host+" 未存活", logger.LOG_TERMINAL_FILE)
 			return false
 		}
 	}
@@ -92,7 +92,7 @@ func Icmp(host string) bool {
 	defer func(conn net.Conn) {
 		err := conn.Close()
 		if err != nil {
-			logger.LogError("Icmp", err.Error())
+			logger.LogError(err.Error(), logger.LOG_TERMINAL_FILE)
 		}
 	}(conn)
 
@@ -120,7 +120,7 @@ func Icmp(host string) bool {
 
 		_, err := conn.Write(data)
 		if err != nil {
-			logger.LogError("Icmp", err.Error())
+			logger.LogError(err.Error(), logger.LOG_TERMINAL_FILE)
 		}
 
 		buf := make([]byte, BufferByteMax)
