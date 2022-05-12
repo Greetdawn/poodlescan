@@ -26,15 +26,24 @@ func main() {
 	}()
 
 	// 全局并发控制
-
 	for i := 0; i <= CmdParas.Threads; i++ {
-		for targetTest := range CmdParas.TargetChan {
-			WG.Add(1)
-			go func(targetTest cmdparser.TargetInput) {
-				common.ScanHostAlived(targetTest)
-				WG.Done()
-			}(targetTest)
-		}
+		WG.Add(1)
+		go func() {
+			defer WG.Done()
+			for targetTest := range CmdParas.TargetChan {
+
+				var childwg sync.WaitGroup
+				childwg.Add(1)
+
+				go func(targetTest cmdparser.TargetInput) {
+					common.ScanHostAlived(targetTest)
+					childwg.Done()
+				}(targetTest)
+
+				childwg.Wait()
+
+			}
+		}()
 	}
 
 	WG.Wait()

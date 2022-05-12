@@ -3,6 +3,7 @@ package cmdparser
 import (
 	"encoding/binary"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"regexp"
@@ -39,6 +40,7 @@ func targetParse(targetInput string) (getTarget []string, isIP bool) {
 	_, _, err := net.ParseCIDR(targetInput)
 	if err != nil {
 		tmp := net.ParseIP(targetInput)
+		fmt.Println(tmp.String())
 		if tmp == nil { // 不是IP，可能是网址或者xxx.xxx.xxx.xxx-xxx
 			if len(matchDomain(targetInput)) != 0 {
 				return matchDomain(targetInput), false
