@@ -58,9 +58,7 @@ func targetParse(targetInput string) (getTarget []string, isIP bool, err1 error)
 	}
 
 	_, _, cidrError := net.ParseCIDR(targetInput)
-
 	if cidrError != nil {
-		fmt.Printf("cidrError: %v\n", cidrError)
 		// 判断是否存在输入错误
 		// if strings.HasPrefix(strings.ToLower(cidrError.Error()), strings.ToLower("invalid CIDR address:")) {
 		// 	err1 = errors.New("invalid target.2")
