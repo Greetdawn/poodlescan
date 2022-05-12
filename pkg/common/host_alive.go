@@ -17,9 +17,16 @@ import (
 )
 
 func ScanHostAlived(c cmdparser.TargetInput) bool {
+	if c.IsIP {
+		return IsHostAlived(c.Target)
+	} else {
+		return IsDomainAlived(c.Target)
+	}
 
-	return IsHostAlived(c.Target)
+}
 
+func IsDomainAlived(host string) bool {
+	return true
 }
 
 // 判断主机是否存活
