@@ -2,14 +2,21 @@ package cmdparser
 
 import (
 	"encoding/binary"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
+
+// 模块变量初始化
+func init() {
+	sort.Strings(DomainArray)
+}
 
 // todo 根据命令行输入初始化全局变量
 func (c *CMDPara) CMDUserInputParse() {
@@ -20,7 +27,15 @@ func (c *CMDPara) CMDUserInputParse() {
 	flag.IntVar(&c.Threads, "T", 5, "设置并发，允许同时扫描几个目标")
 	// todo Paras其他参数
 	flag.Parse()
-	tmpSlice, isIP := targetParse(c.UserInputTargetString)
+
+	fmt.Println(c.UserInputTargetString)
+	fmt.Println(c.BreakPingScan)
+	fmt.Println(c.Threads)
+
+	tmpSlice, isIP, err := targetParse(c.UserInputTargetString)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+	}
 	c.isIP = isIP
 	if isIP {
 		c.IpList = append(c.IpList, tmpSlice...)
@@ -35,24 +50,50 @@ func (c *CMDPara) CMDUserInputParse() {
 // 192.168.0.1/24
 // http://www.baidu.com
 // www.baidu.com
-func targetParse(targetInput string) (getTarget []string, isIP bool) {
+func targetParse(targetInput string) (getTarget []string, isIP bool, err1 error) {
+	// 如果目标字符串中没有.(dot)认为目标无效
+	if !strings.Contains(targetInput, ".") {
+		err1 = errors.New("invalid target.1")
+		return nil, false, err1
+	}
 
-	_, _, err := net.ParseCIDR(targetInput)
-	if err != nil {
-		tmp := net.ParseIP(targetInput)
-		fmt.Println(tmp)
-		if tmp == nil { // 不是IP，可能是网址或者xxx.xxx.xxx.xxx-xxx
-			if len(matchDomain(targetInput)) != 0 {
-				return matchDomain(targetInput), false
+	_, _, cidrError := net.ParseCIDR(targetInput)
+
+	if cidrError != nil {
+		fmt.Printf("cidrError: %v\n", cidrError)
+		// 判断是否存在输入错误
+		// if strings.HasPrefix(strings.ToLower(cidrError.Error()), strings.ToLower("invalid CIDR address:")) {
+		// 	err1 = errors.New("invalid target.2")
+		// 	return nil, false, err1
+		// }
+
+		// 尝试将目标解析为IP
+		result := net.ParseIP(targetInput)
+		if result != nil {
+			// 成功将目标解析为IP，保存目标的IP
+			fmt.Println("ss:::IP")
+			return append(getTarget, result.String()), true, nil
+		} else {
+			// 检查是否为域名
+			// 当目标主机以常见域名格式结尾时，认为是个域名
+			parts := strings.Split(targetInput, ".")
+			endDomain := "." + parts[len(parts)-1]
+			index := sort.SearchStrings(DomainArray, endDomain)
+			if index < len(DomainArray) && DomainArray[index] == "."+parts[len(parts)-1] {
+				// 认为合法域名
+				fmt.Printf("%s\n", " 确认:::合法域名")
+				return append(getTarget, targetInput), false, nil
+			} else if isIpSeg(targetInput) {
+				fmt.Println("确认:::合法IP段")
+				return matchIPRange(targetInput), true, nil
 			} else {
-				return matchIPRange(targetInput), true
+				err1 = errors.New("invalid target.")
+				return nil, false, err1
 			}
-
-		} else { // 是ip
-			return append(getTarget, tmp.String()), true
 		}
 	} else { // 是ip段,xxx.xxx.xxx.xxx/xx
-		return cidrHosts(targetInput), true
+		fmt.Println("猜测:::IP段")
+		return cidrHosts(targetInput), true, nil
 	}
 }
 
@@ -81,14 +122,6 @@ func cidrHosts(netw string) []string {
 	}
 	// return a slice of strings containing IP addresses
 	return hosts
-}
-
-// 匹配网址
-func matchDomain(s string) []string {
-	re := `([\w]([\w]{0,63}[\w])?\.)+[a-zA-Z]{2,6}\/?(\w+)?`
-	reg := regexp.MustCompile(re)
-	regRes := reg.FindAllString(s, -1)
-	return regRes
 }
 
 // 匹配ip段，192.168.1.1-20，返回有效ip列表
@@ -123,4 +156,27 @@ func matchIPRange(s string) (ipSlice []string) {
 		}
 	}
 	return
+}
+
+func isIpSeg(ipstr string) bool {
+	part2 := strings.Split(ipstr, "-")
+	if len(part2) != 2 {
+		return false
+	}
+	_, e1 := strconv.ParseFloat(part2[1], 64)
+	if e1 != nil {
+		return false
+	}
+
+	part4 := strings.Split(part2[0], ".")
+	if len(part4) != 4 {
+		return false
+	}
+	for _, v := range part4 {
+		_, e1 := strconv.ParseFloat(v, 64)
+		if e1 != nil {
+			return false
+		}
+	}
+	return true
 }
