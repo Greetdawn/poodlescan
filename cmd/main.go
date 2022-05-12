@@ -27,6 +27,7 @@ func main() {
 
 	// 全局并发控制
 	for i := 0; i <= CmdParas.Threads; i++ {
+
 		WG.Add(1)
 		go func() {
 			defer WG.Done()
