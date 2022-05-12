@@ -19,9 +19,9 @@ func main() {
 	// 开扫
 	/*
 		顺序扫描：
-		logic.PoodleLogic(CmdParas,true, 第一步,第二步,第三步)
+		logic.PoodleLogic(CmdParas,true, <第一步函数名>,<第二步函数名>...)
 		并发扫描:
-		logic.PoodleLogic(CmdParas,false, 第一步,第二步,第三步)
+		logic.PoodleLogic(CmdParas,false, 函数名,函数名...)
 	*/
 
 	logic.PoodleLogic(CmdParas, false, common.ScanHostAlived)
