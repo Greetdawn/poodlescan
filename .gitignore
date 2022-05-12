@@ -1,4 +1,5 @@
 # 忽略默认编译位置的.exe
 main.exe
+/cmd/*.exe
 # 忽略生成的.db
 *.db
