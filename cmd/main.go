@@ -31,12 +31,24 @@ func main() {
 		go func() {
 			defer WG.Done()
 			for targetTest := range CmdParas.TargetChan {
-
 				var childwg sync.WaitGroup
-				childwg.Add(1)
 
+				// 如果需要并发，请添加
+				/*
+					childwg.Add(1)
+					go func(targetTest cmdparser.TargetInput) {
+						函数名称(参数列表)
+						childwg.Done()
+					}(参数列表)
+				*/
+
+				childwg.Add(1)
 				go func(targetTest cmdparser.TargetInput) {
+
 					common.ScanHostAlived(targetTest)
+					// 如果需要顺序逻辑，请在此处添加
+					// otherfunc()
+
 					childwg.Done()
 				}(targetTest)
 
