@@ -31,7 +31,11 @@ func main() {
 		for targetTest := range CmdParas.TargetChan {
 			WG.Add(1)
 			go func(targetTest cmdparser.TargetInput) {
-				common.ScanHostAlived(targetTest)
+				WG.Add(1)
+				go func() {
+					common.ScanHostAlived(targetTest)
+					WG.Done()
+				}()
 				WG.Done()
 			}(targetTest)
 		}
