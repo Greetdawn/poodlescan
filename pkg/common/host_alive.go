@@ -16,11 +16,11 @@ import (
 	"time"
 )
 
-func ScanHostAlived(c cmdparser.TargetInput) bool {
+func ScanHostAlived(c cmdparser.TargetInput) {
 	if c.IsIP {
-		return IsHostAlived(c.Target)
+		IsHostAlived(c.Target)
 	} else {
-		return IsDomainAlived(c.Target)
+		IsDomainAlived(c.Target)
 	}
 
 }
