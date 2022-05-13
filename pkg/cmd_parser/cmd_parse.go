@@ -74,8 +74,8 @@ func (this *TerminalParams) ParseTerminal() bool {
 // 测试。执行命令
 func (this *TerminalParams) PrintTask() {
 	var tmps sync.WaitGroup
-	tmps.Add(300)
-	for j := 0; j < 300; j++ {
+	tmps.Add(this.ThreadsNumber)
+	for j := 0; j < this.ThreadsNumber; j++ {
 		go func() {
 			defer tmps.Done()
 			var end = true

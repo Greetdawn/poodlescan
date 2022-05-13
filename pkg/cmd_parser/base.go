@@ -33,3 +33,8 @@ type TerminalParams struct {
 	// Pn "跳过Ping扫"，默认不跳过Ping扫
 	IsPn bool
 }
+
+// 获取一个TerminalParams对象
+func GetTerminalParamObj() *TerminalParams {
+	return &TerminalParams{}
+}
