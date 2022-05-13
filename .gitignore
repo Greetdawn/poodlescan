@@ -5,3 +5,4 @@ main.exe
 *.db
 # 忽略
 *.log
+.vscode
