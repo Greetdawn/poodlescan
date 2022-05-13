@@ -1,4 +1,4 @@
-package parser
+package controllor
 
 import (
 	"poodle/pkg/asset_host"

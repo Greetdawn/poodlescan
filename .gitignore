@@ -3,3 +3,5 @@ main.exe
 /cmd/*.exe
 # 忽略生成的.db
 *.db
+# 忽略
+*.log
