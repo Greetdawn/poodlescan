@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
 	cmdparser "poodle/pkg/cmd_parser"
+	"poodle/pkg/common"
+	controllor "poodle/pkg/controller"
+	"poodle/pkg/logger"
 	"sync"
 )
 
@@ -13,12 +17,18 @@ import (
 var mainWaitGroup sync.WaitGroup
 
 func main() {
+	// 新建任务通道
+	common.G_TaskChannal = make(chan *common.TASKUint, 10000)
 
-	// 保存命令行解析后的内容
-	terminalParams := cmdparser.GetTerminalParamObj()
-
-	// 1. 解析命令行参数
-	terminalParams.ParseUserInput()
+	// 1. 解析用户输入的命令行
+	var err error
+	common.G_TerminalParam, err = cmdparser.ParsingUserTerminalLine()
+	if err != nil {
+		// 解析用户的输入目标发生错误。
+		logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
+	}
+	// 2. 生成CC 控制码
+	cc := common.G_TerminalParam.GenerateControlCode()
 
 	// 多线程处理，开启2个子线程同时运行。
 	// 线程1：解析终端参数结构体，生成对应的目标，将目标转化为任务结构体，传入通道中
@@ -26,14 +36,19 @@ func main() {
 	mainWaitGroup.Add(2)
 	go func() {
 		defer mainWaitGroup.Done()
-		// 2. 解析终端参数结构体，生成对应的目标，将目标转化为任务结构体，传入通道中
-		terminalParams.ParseTerminal()
+		// 3. 解析终端参数结构体，生成对应的目标，将目标转化为任务结构体，传入通道中
+		err := cmdparser.ParsingTerminalParamsStruct(&common.G_TerminalParam, cc)
+		if err != nil {
+			// 解析用户的输入目标发生错误。
+			logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
+		}
+		//terminalParams.ParseTerminal()
 	}()
 
 	go func() {
 		defer mainWaitGroup.Done()
-		// 3. 从通道中获取任务，开启-T指定的线程数并发处理任务
-		terminalParams.PrintTask()
+		// 4. 从通道中获取任务，开启-T指定的线程数并发处理任务
+		controllor.Run()
 	}()
 
 	mainWaitGroup.Wait()

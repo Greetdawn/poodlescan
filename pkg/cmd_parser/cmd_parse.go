@@ -13,10 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 )
-
-var TaskChannal chan *TASKUint
 
 type _Target struct {
 	Target string //目标
@@ -25,78 +22,51 @@ type _Target struct {
 
 // 模块变量初始化
 func init() {
-	sort.Strings(DomainArray)
+	sort.Strings(common.DOMAINARRAY)
 }
 
-// todo 根据命令行输入初始化全局变量
-func (this *TerminalParams) ParseUserInput() {
+// 根据命令行输入初始化TerminalParams结构体
+func ParsingUserTerminalLine() (terminalParams common.TerminalParams, err error) {
 	// -t : 设置用户提供的目标
-	flag.StringVar(&this.UserInputTargetString, "t", "", "设置扫描目标")
+	flag.StringVar(&terminalParams.UserInputTargetString, "t", "", "设置扫描目标")
 
 	// -Pn : 如果加了这个参数，则表示跳过Ping扫
-	flag.BoolVar(&this.IsPn, "Pn", false, "true:跳过ping扫;false（默认）:不跳过Ping扫")
+	flag.BoolVar(&terminalParams.IsPn, "Pn", false, "true:跳过ping扫;false（默认）:不跳过Ping扫")
 
 	// -T : 用户设置线程
-	flag.IntVar(&this.ThreadsNumber, "T", 5, "设置并发，允许同时扫描几个目标")
+	flag.IntVar(&terminalParams.ThreadsNumber, "T", 5, "设置并发，允许同时扫描几个目标")
 	// todo Paras其他参数
 
 	// 开始解析
 	flag.Parse()
 
 	// debug信息
-	logger.LogInfo("参数：用户设置目标："+this.UserInputTargetString, logger.LOG_TERMINAL)
-	logger.LogInfo(fmt.Sprintf("参数：是否跳过Ping扫描：%t", this.IsPn), logger.LOG_TERMINAL)
-	logger.LogInfo("参数：线程数："+strconv.Itoa(this.ThreadsNumber), logger.LOG_TERMINAL)
+	logger.LogInfo("参数：用户设置目标："+terminalParams.UserInputTargetString, logger.LOG_TERMINAL)
+	logger.LogInfo(fmt.Sprintf("参数：是否跳过Ping扫描：%t", terminalParams.IsPn), logger.LOG_TERMINAL)
+	logger.LogInfo("参数：线程数："+strconv.Itoa(terminalParams.ThreadsNumber), logger.LOG_TERMINAL)
+
+	return
 }
 
-// 解析TerminalParams结构体
-func (this *TerminalParams) ParseTerminal() bool {
-	// 1. 解析用户的输入目标
-	targets, err := parseUserInputTargetString(this.UserInputTargetString)
+// 命令行解析，生成任务，将任务写入任务通道中
+func ParsingTerminalParamsStruct(tp *common.TerminalParams, cc uint) error {
+	// 3. 解析用户的输入目标
+	targets, err := parseUserInputTargetString(common.G_TerminalParam.UserInputTargetString)
 	if err != nil {
 		// 解析用户的输入目标发生错误。
-		logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
-		return false
+		return err
 	}
-	// 2. 将目标转化成 Task ，写入通道中。
-	TaskChannal = make(chan *TASKUint, 10000)
+
+	// 4. 将目标转化成 Task ，写入通道中。
 	for _, target := range targets {
 		if target.IsIp {
-			TaskChannal <- &TASKUint{target.Target, TASKUint_TargetType_IP, 1} //控制码1，暂时不用
+			common.G_TaskChannal <- &common.TASKUint{Target: target.Target, TargetType: common.TASKUint_TargetType_IP, ControlCode: cc}
 		} else {
-			TaskChannal <- &TASKUint{target.Target, TASKUint_TargetType_Domain, 1} //控制码1，暂时不用
+			common.G_TaskChannal <- &common.TASKUint{Target: target.Target, TargetType: common.TASKUint_TargetType_Domain, ControlCode: cc}
 		}
 	}
-	close(TaskChannal)
-	return true
-}
-
-// 测试。执行命令
-func (this *TerminalParams) PrintTask() {
-	var tmps sync.WaitGroup
-	tmps.Add(this.ThreadsNumber)
-	for j := 0; j < this.ThreadsNumber; j++ {
-		go func() {
-			defer tmps.Done()
-			var end = true
-			for end {
-				select {
-				case target, ok := <-TaskChannal:
-					if !ok {
-						//logger.LogWarn("TaskChannal 通道已关闭", logger.LOG_TERMINAL)
-						end = false
-					} else {
-						common.IsHostAlived(target.Target)
-						// fmt.Println(target)
-					}
-				default:
-
-				}
-
-			}
-		}()
-	}
-	tmps.Wait()
+	close(common.G_TaskChannal)
+	return nil
 }
 
 // 解析用户输入的“目标”字符串
@@ -119,8 +89,8 @@ func parseUserInputTargetString(targetInput string) (targets []_Target, err erro
 			// 当目标主机以常见域名格式结尾时，认为是个域名
 			parts := strings.Split(targetInput, ".")
 			endDomain := "." + parts[len(parts)-1]
-			index := sort.SearchStrings(DomainArray, endDomain)
-			if index < len(DomainArray) && DomainArray[index] == "."+parts[len(parts)-1] {
+			index := sort.SearchStrings(common.DOMAINARRAY, endDomain)
+			if index < len(common.DOMAINARRAY) && common.DOMAINARRAY[index] == "."+parts[len(parts)-1] {
 				// 认为合法域名
 				return append(targets, _Target{targetInput, false}), nil
 			} else if isIpRange(targetInput) {

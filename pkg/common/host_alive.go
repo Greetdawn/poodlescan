@@ -15,29 +15,16 @@ import (
 	"time"
 )
 
-// func ScanHostAlived(host string) {
-// 	if c.IsIP {
-// 		IsHostAlived(host)
-// 	} else {
-// 		IsDomainAlived(host)
-// 	}
-
-// }
-
-// func IsDomainAlived(host string) bool {
-// 	return true
-// }
-
 // 判断主机是否存活
 // host可以传入IP、域名
 func IsHostAlived(host string) bool {
 	// 通过ICMP方法判断当前主机是否存活
-	if Icmp(host) {
+	if _Icmp(host) {
 		logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
 		return true
 	} else {
 		// 使用系统本机ping判断当前主机是否存活
-		if Ping(host) {
+		if _Ping(host) {
 			logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
 			return true
 		} else {
@@ -48,13 +35,13 @@ func IsHostAlived(host string) bool {
 }
 
 var (
-	BufferByteMax           = 65535
+	bufferByteMax           = 65535
 	timeout       int64     = 120 //1200毫秒
 	command       *exec.Cmd       //命令执行
 )
 
 // 构造ICMP数据包格式
-type ICMP struct {
+type _ICMP struct {
 	Type        uint8
 	Code        uint8
 	Checksum    uint16
@@ -62,7 +49,7 @@ type ICMP struct {
 	SequenceNum uint16
 }
 
-func CheckSum(data []byte) (rt uint16) {
+func checkSum(data []byte) (rt uint16) {
 	var (
 		sum    uint32
 		length = len(data)
@@ -81,7 +68,7 @@ func CheckSum(data []byte) (rt uint16) {
 }
 
 // 定义icmp探测功能
-func Icmp(host string) bool {
+func _Icmp(host string) bool {
 	SuccessTimes := 0
 	conn, _ := net.DialTimeout("ip:icmp", host, time.Duration(timeout)*time.Millisecond)
 	if conn == nil {
@@ -96,7 +83,7 @@ func Icmp(host string) bool {
 	}(conn)
 
 	// 设施icmp头部信息
-	icmp := ICMP{8, 0, 0, 0, 0}
+	icmp := _ICMP{8, 0, 0, 0, 0}
 
 	var buffer bytes.Buffer
 	_ = binary.Write(&buffer, binary.BigEndian, icmp)
@@ -111,7 +98,7 @@ func Icmp(host string) bool {
 
 		data[6], data[7] = byte(icmp.SequenceNum>>8), byte(icmp.SequenceNum)
 
-		icmp.Checksum = CheckSum(data)
+		icmp.Checksum = checkSum(data)
 		data[2], data[3] = byte(icmp.Checksum>>8), byte(icmp.Checksum)
 
 		tmpTimeNow := time.Now()
@@ -122,7 +109,7 @@ func Icmp(host string) bool {
 			logger.LogError(err.Error(), logger.LOG_TERMINAL_FILE)
 		}
 
-		buf := make([]byte, BufferByteMax)
+		buf := make([]byte, bufferByteMax)
 		n, err := conn.Read(buf)
 		if err != nil {
 			continue
@@ -141,7 +128,7 @@ func Icmp(host string) bool {
 }
 
 // 调用系统ping命令实现主机存活探测
-func Ping(host string) bool {
+func _Ping(host string) bool {
 	// 运行前判断当前系统类型
 	OS := runtime.GOOS
 	if OS == "linux" || OS == "darwin" {
