@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"net"
+	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
 	"regexp"
 	"sort"
@@ -212,10 +213,33 @@ func isIpRange(ipstr string) bool {
 	return true
 }
 
+var mutex sync.Mutex
+
 // 执行功能
 func run(task *common.TASKUint) {
+	var assetHost asset_host.AssetHost
+	if task.TargetType&common.TASKUint_TargetType_IP == common.TASKUint_TargetType_IP {
+		assetHost.IsIP = true
+		assetHost.RealIP = task.Target
+	} else {
+		assetHost.IsIP = false
+		assetHost.Domain = common.Domain{Name: task.Target}
+	}
+
+	var alived = true
 	// ping扫功能
 	if task.ControlCode&common.CC_PING_SCAN == common.CC_PING_SCAN {
-		common.IsHostAlived(task.Target)
+		alived = asset_host.G_Sniffer.IsHostAlived(task.Target)
+	}
+	// 端口扫描功能
+	if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
+		// 执行端口扫描
+	}
+
+	// 根据存活信息分别存放
+	if alived {
+		asset_host.G_Sniffer.AppendAlivedAssetHost(assetHost)
+	} else {
+		asset_host.G_Sniffer.AppendDiedAssetHost(assetHost)
 	}
 }

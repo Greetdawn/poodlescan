@@ -2,16 +2,12 @@ package main
 
 import (
 	"fmt"
+	"poodle/pkg/asset_host"
 	cmdparser "poodle/pkg/cmd_parser"
 	controllor "poodle/pkg/controller"
 	"poodle/pkg/logger"
 	"sync"
 )
-
-// var (
-// 	// 初始化参数
-// 	CmdParas = cmdparser.CMDParseInit()
-// )
 
 var mainWaitGroup sync.WaitGroup
 
@@ -39,7 +35,6 @@ func main() {
 			// 解析用户的输入目标发生错误。
 			logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
 		}
-		//terminalParams.ParseTerminal()
 	}()
 
 	go func() {
@@ -49,4 +44,5 @@ func main() {
 	}()
 
 	mainWaitGroup.Wait()
+	asset_host.G_Sniffer.PrintAssetHostList()
 }

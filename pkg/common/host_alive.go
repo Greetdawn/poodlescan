@@ -20,15 +20,15 @@ import (
 func IsHostAlived(host string) bool {
 	// 通过ICMP方法判断当前主机是否存活
 	if _Icmp(host) {
-		logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
+		//logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
 		return true
 	} else {
 		// 使用系统本机ping判断当前主机是否存活
 		if _Ping(host) {
-			logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
+			//logger.LogInfo("目标主机: "+host+" 存活", logger.LOG_TERMINAL_FILE)
 			return true
 		} else {
-			logger.LogWarn("目标主机: "+host+" 未存活", logger.LOG_TERMINAL_FILE)
+			//logger.LogWarn("目标主机: "+host+" 未存活", logger.LOG_TERMINAL_FILE)
 			return false
 		}
 	}

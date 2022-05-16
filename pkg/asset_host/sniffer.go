@@ -4,7 +4,16 @@ import (
 	"fmt"
 	"poodle/pkg/common"
 	"poodle/pkg/logger"
+	"sync"
 )
+
+var mutex sync.Mutex
+var G_Sniffer *Sniffer
+
+func init() {
+	fmt.Print("sdfsdgf")
+	G_Sniffer = new(Sniffer)
+}
 
 // sniffer的接口类
 type ISniffer interface {
@@ -20,8 +29,6 @@ type ISniffer interface {
 
 // 嗅探器的父类，对外只暴露这个类。
 type Sniffer struct {
-	// 命令码
-	// CmdCode int
 
 	// 需要嗅探的IP列表
 	TargetIPs []string
@@ -42,18 +49,34 @@ type Sniffer struct {
 	DiedAssetHosts []AssetHost
 }
 
+// 用单例的方式获取嗅探器对象
+func GetSnifferObj() *Sniffer {
+	// if G_Sniffer == nil {
+	// 	mutex.Lock() //加锁，防止多线程异常
+	// 	if G_Sniffer == nil {
+	// 		G_Sniffer = &Sniffer{}
+	// 	}
+	// 	mutex.Unlock()
+	// }
+	// return G_Sniffer
+	// once.Do(func() {
+	// 	G_Sniffer = &Sniffer{}
+	// })
+	return G_Sniffer
+}
+
 // 追加存活资产信息
 func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
-	logger.LogInfo("append an asset host to the alived list of asset host.", logger.LOG_TERMINAL_FILE)
+	mutex.Lock()
 	this.AlivedAssetHosts = append(this.AlivedAssetHosts, asset)
-	logger.LogInfo(fmt.Sprintf("the current number of asset host is %d.", len(this.AlivedAssetHosts)), logger.LOG_TERMINAL_FILE)
+	mutex.Unlock()
 }
 
 // 追加不存活资产信息
 func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
-	logger.LogInfo("append an asset host to the died list of asset host.", logger.LOG_TERMINAL_FILE)
+	mutex.Lock()
 	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
-	logger.LogInfo(fmt.Sprintf("the current number of asset host is %d.", len(this.DiedAssetHosts)), logger.LOG_TERMINAL_FILE)
+	mutex.Unlock()
 }
 
 // 实现iSniffer的接口:StartSniff
@@ -74,10 +97,18 @@ func (this *Sniffer) StartDomainSniff() {
 func (this *Sniffer) PrintAssetHostList() {
 	logger.LogInfo("资产主机信息：", logger.LOG_TERMINAL_FILE)
 	for _, asset := range this.AlivedAssetHosts {
-		logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
+		// 全部打印
+		// logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
+		logger.LogNoFormat("\t"+asset.RealIP+"\n", logger.LOG_TERMINAL)
 	}
-	logger.LogInfo("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
+
+	logger.LogWarn("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
 	for _, asset := range this.DiedAssetHosts {
-		logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
+		logger.LogNoFormat("\t"+asset.RealIP+"\n", logger.LOG_TERMINAL)
 	}
+}
+
+// 嗅探目标主机是否存活
+func (this *Sniffer) IsHostAlived(target string) bool {
+	return common.IsHostAlived(target)
 }
