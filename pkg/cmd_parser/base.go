@@ -35,5 +35,7 @@ func (this *TerminalParams) GenerateControlCode() (controlCode uint) {
 		controlCode |= common.CC_PING_SCAN
 	}
 
+	// 端口扫描
+	controlCode |= common.CC_PORT_SCAN
 	return controlCode
 }

@@ -215,6 +215,9 @@ func isIpRange(ipstr string) bool {
 
 // 执行功能
 func run(task *common.TASKUint) {
+	// 嗅探器对象
+	sniffer := asset_host.GetSnifferObj()
+
 	var assetHost asset_host.AssetHost
 	if task.TargetType&common.TASKUint_TargetType_IP == common.TASKUint_TargetType_IP {
 		assetHost.IsIP = true
@@ -227,12 +230,9 @@ func run(task *common.TASKUint) {
 	var alived = true
 	// ping扫功能
 	if task.ControlCode&common.CC_PING_SCAN == common.CC_PING_SCAN {
-		alived = asset_host.GetSnifferObj().IsHostAlived(task.Target)
+		alived = sniffer.IsHostAlived(task.Target)
 	}
-	// 端口扫描功能
-	if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
-		// 执行端口扫描
-	}
+
 	// 子域扫描功能
 	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
 		// 执行子域扫描功能
@@ -240,6 +240,11 @@ func run(task *common.TASKUint) {
 
 	// 根据存活信息分别存放
 	if alived {
+		// 端口扫描功能
+		if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
+			assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
+		}
+
 		asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
 	} else {
 		asset_host.GetSnifferObj().AppendDiedAssetHost(assetHost)

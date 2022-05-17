@@ -5,16 +5,25 @@
 package asset_host
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 	"sync"
 	"time"
 )
 
+var (
+	proto         string = "tcp"
+	timeoutSecond int    = 5
+	threads       int    = 200
+)
+
+func ScanHostOpenedPorts(target string) sync.Map {
+	return _TCPOrUDPPortScan(target)
+}
+
 // 如果ports长度为0，则进行全端口扫描
 // 默认200并发
-func TCPOrUDPPortScan(target string, proto string, timeoutSecond int, threads int, ports ...string) sync.Map {
+func _TCPOrUDPPortScan(target string, ports ...string) sync.Map {
 	var (
 		wg              sync.WaitGroup
 		productPortChan chan string = make(chan string)
@@ -49,7 +58,7 @@ func TCPOrUDPPortScan(target string, proto string, timeoutSecond int, threads in
 		go func() {
 			defer wg.Done()
 			for p := range productPortChan {
-				fmt.Printf("\r[*]正在扫描:%s端口", p)
+				// fmt.Printf("\r[*]正在扫描:%s端口", p)
 				// 拼接地址
 				addr := net.JoinHostPort(target, p)
 				// 建立连接

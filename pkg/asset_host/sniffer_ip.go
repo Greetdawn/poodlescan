@@ -30,7 +30,7 @@ func (this *ipSniffer) StartSniff() {
 		} else {
 			// 主机存活情况
 			// 2. 嗅探端口信息
-			ports := this.sniffPort(currentIP)
+			//ports := this.sniffPort(currentIP)
 			// 3. 资产信息
 			var asset AssetHost
 			// 是IP主机
@@ -40,7 +40,7 @@ func (this *ipSniffer) StartSniff() {
 			// 设置IP存活
 			asset.IsAlived = true
 			// 设置开放端口信息
-			asset.Ports = ports
+			//asset.Ports = ports
 			// 添加到资产主机列表中
 			this.super.AppendAlivedAssetHost(asset)
 		}

@@ -1,7 +1,6 @@
 package asset_host
 
 import (
-	"fmt"
 	"poodle/pkg/common"
 	"sync"
 )
@@ -35,7 +34,7 @@ type AssetHost struct {
 
 	// 开放的端口
 	// <int, string> <开放端口号, 对应端口信息>
-	Ports []int
+	OpenedPorts sync.Map
 
 	// 域名备案信息
 	// IPC string
@@ -61,8 +60,9 @@ type AssetWeb struct {
 	SpecialSuffic sync.Map
 }
 
-func (this *AssetHost) ToString() (info string) {
-	info = fmt.Sprintf("\tIsIP :%t\n\tRealIP : %s\n\tDomain : %#v\n\tIP存活情况：%t\n\t子域列表 : %#v\n\tPorts : %#v\n",
-		this.IsIP, this.RealIP, this.Domain, this.IsAlived, this.SubDomains, this.Ports)
-	return info
+func (this *AssetHost) AppendOpenedPortMap(portMap sync.Map) {
+	portMap.Range(func(key, value interface{}) bool {
+		this.OpenedPorts.Store(key.(string), value.(string))
+		return true
+	})
 }

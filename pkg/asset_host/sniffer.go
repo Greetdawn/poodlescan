@@ -89,12 +89,17 @@ func (this *Sniffer) PrintAssetHostList() {
 	for _, asset := range this.AlivedAssetHosts {
 		// 全部打印
 		// logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
-		logger.LogNoFormat("\t"+asset.RealIP+"\n", logger.LOG_TERMINAL)
+		logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
+		logger.LogNoFormat("    开放端口信息：\n", logger.LOG_TERMINAL)
+		asset.OpenedPorts.Range(func(key, value interface{}) bool {
+			logger.LogNoFormat("      "+key.(string)+"\t"+value.(string)+"\n", logger.LOG_TERMINAL)
+			return true
+		})
 	}
 
 	logger.LogWarn("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
 	for _, asset := range this.DiedAssetHosts {
-		logger.LogNoFormat("\t"+asset.RealIP+"\n", logger.LOG_TERMINAL)
+		logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
 	}
 }
 
@@ -104,7 +109,7 @@ func (this *Sniffer) IsHostAlived(target string) bool {
 }
 
 // 嗅探目标主机开放端口信息
-func (this *Sniffer) SnifferHostOpenedPorts(target string) []int {
+func (this *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
 	return ScanHostOpenedPorts(target)
 }
 
