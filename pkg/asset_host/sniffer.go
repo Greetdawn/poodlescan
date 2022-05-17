@@ -6,9 +6,6 @@ import (
 	"sync"
 )
 
-// 多线程同步追加资产信息
-var mutex sync.Mutex
-
 // 嗅探器单例
 var pSniffer *Sniffer
 var once sync.Once
@@ -57,16 +54,12 @@ func GetSnifferObj() *Sniffer {
 
 // 追加存活资产信息
 func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
-	mutex.Lock()
 	this.AlivedAssetHosts = append(this.AlivedAssetHosts, asset)
-	mutex.Unlock()
 }
 
 // 追加不存活资产信息
 func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
-	mutex.Lock()
 	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
-	mutex.Unlock()
 }
 
 // 实现iSniffer的接口:StartSniff
@@ -91,16 +84,15 @@ func (this *Sniffer) PrintAssetHostList() {
 		// logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
 		logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
 		logger.LogNoFormat("    开放端口信息：\n", logger.LOG_TERMINAL)
-		asset.OpenedPorts.Range(func(key, value interface{}) bool {
-			logger.LogNoFormat("      "+key.(string)+"\t"+value.(string)+"\n", logger.LOG_TERMINAL)
-			return true
-		})
+		for key, value := range asset.OpenedPorts {
+			logger.LogNoFormat("      "+key+"\t"+value+"\n", logger.LOG_TERMINAL)
+		}
 	}
 
-	logger.LogWarn("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
-	for _, asset := range this.DiedAssetHosts {
-		logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
-	}
+	// logger.LogWarn("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
+	// for _, asset := range this.DiedAssetHosts {
+	// 	logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
+	// }
 }
 
 // 嗅探目标主机是否存活

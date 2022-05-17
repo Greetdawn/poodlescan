@@ -2,6 +2,7 @@ package asset_host
 
 import (
 	"poodle/pkg/common"
+	"strings"
 	"sync"
 )
 
@@ -34,7 +35,7 @@ type AssetHost struct {
 
 	// 开放的端口
 	// <int, string> <开放端口号, 对应端口信息>
-	OpenedPorts sync.Map
+	OpenedPorts map[string]string
 
 	// 域名备案信息
 	// IPC string
@@ -60,9 +61,26 @@ type AssetWeb struct {
 	SpecialSuffic sync.Map
 }
 
+func (this *AssetHost) Init() {
+	this.OpenedPorts = make(map[string]string)
+}
+
 func (this *AssetHost) AppendOpenedPortMap(portMap sync.Map) {
 	portMap.Range(func(key, value interface{}) bool {
-		this.OpenedPorts.Store(key.(string), value.(string))
+		k := key.(string)
+		v := value.(string)
+		v = strings.ReplaceAll(v, "\r", "")
+		v = strings.ReplaceAll(v, "\n", "")
+		var data []byte
+		for i := 0; i < len(v); i++ {
+			if v[i] != 0 {
+				data = append(data, byte(v[i]))
+			} else {
+				break
+			}
+		}
+		v = string(data)
+		this.OpenedPorts[k] = v
 		return true
 	})
 }

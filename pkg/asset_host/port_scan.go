@@ -14,10 +14,13 @@ import (
 var (
 	proto         string = "tcp"
 	timeoutSecond int    = 5
-	threads       int    = 200
+	threads       int    = 2000
 )
 
-func ScanHostOpenedPorts(target string) sync.Map {
+func ScanHostOpenedPorts(target string) (portMap sync.Map) {
+	// ports := []string{"22", "80", "8090", "8091"}
+	// return _TCPOrUDPPortScan(target, ports...)
+
 	return _TCPOrUDPPortScan(target)
 }
 
@@ -58,7 +61,7 @@ func _TCPOrUDPPortScan(target string, ports ...string) sync.Map {
 		go func() {
 			defer wg.Done()
 			for p := range productPortChan {
-				// fmt.Printf("\r[*]正在扫描:%s端口", p)
+				// fmt.Printf("[*]正在扫描[%s]:%s端口\n", target, p)
 				// 拼接地址
 				addr := net.JoinHostPort(target, p)
 				// 建立连接
@@ -71,10 +74,8 @@ func _TCPOrUDPPortScan(target string, ports ...string) sync.Map {
 					resMap.Store(p, string(tmp[:]))
 				}
 			}
-
 		}()
 	}
 	wg.Wait()
-
 	return resMap
 }

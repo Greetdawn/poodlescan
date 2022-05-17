@@ -14,6 +14,10 @@ import (
 	"sync"
 )
 
+// 多线程同步追加资产信息
+var mutexOfAppendAsset sync.Mutex
+var mutexOfAppendOpenedPorts sync.Mutex
+
 //(alivedList asset_host.AssetHost, diedList asset_host.AssetHost, err error)
 func Run(threadNum int) {
 	var tmps sync.WaitGroup
@@ -213,12 +217,15 @@ func isIpRange(ipstr string) bool {
 	return true
 }
 
+var runSync sync.WaitGroup
+
 // 执行功能
 func run(task *common.TASKUint) {
 	// 嗅探器对象
 	sniffer := asset_host.GetSnifferObj()
 
 	var assetHost asset_host.AssetHost
+	assetHost.Init()
 	if task.TargetType&common.TASKUint_TargetType_IP == common.TASKUint_TargetType_IP {
 		assetHost.IsIP = true
 		assetHost.RealIP = task.Target
@@ -242,11 +249,22 @@ func run(task *common.TASKUint) {
 	if alived {
 		// 端口扫描功能
 		if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
-			assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
+			//
+			runSync.Add(1)
+			go func() {
+				defer runSync.Done()
+				// mutexOfAppendOpenedPorts.Lock()
+				assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
+				// mutexOfAppendOpenedPorts.Unlock()
+			}()
 		}
-
+		mutexOfAppendAsset.Lock()
 		asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
+		mutexOfAppendAsset.Unlock()
 	} else {
+		mutexOfAppendAsset.Lock()
 		asset_host.GetSnifferObj().AppendDiedAssetHost(assetHost)
+		mutexOfAppendAsset.Unlock()
 	}
+	runSync.Wait()
 }
