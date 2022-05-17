@@ -18,6 +18,20 @@ type TerminalParams struct {
 	ThreadsNumber int // 总线程数，同时扫描几个目标
 	// Pn "跳过Ping扫"，默认不跳过Ping扫,false
 	IsPn bool
+	// 定义是否进行完整嗅探扫描
+	Sniffer bool
+	// 定义是否进行端口扫描
+	PortScan bool
+	// 定义端口扫描的范围
+	PortList string
+	// 定义是否进行子域探测
+	SubDomain bool
+	// 指定是否进行网站爬虫
+	Spider bool
+	// 指定是否进行指纹识别
+	Fingerprint bool
+	// 指定全漏洞扫描
+	vulscan bool
 }
 
 // 获取一个TerminalParams对象

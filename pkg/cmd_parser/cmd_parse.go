@@ -49,18 +49,42 @@ func ParsingUserTerminalLine() (terminalParams TerminalParams, err error) {
 	flag.StringVar(&terminalParams.UserInputTargetString, "t", "", "设置扫描目标")
 
 	// -Pn : 如果加了这个参数，则表示跳过Ping扫
-	flag.BoolVar(&terminalParams.IsPn, "Pn", false, "true:跳过ping扫;false（默认）:不跳过Ping扫")
+	flag.BoolVar(&terminalParams.IsPn, "Pn", false, "跳过ping扫")
 
 	// -T : 用户设置线程
 	flag.IntVar(&terminalParams.ThreadsNumber, "T", 5, "设置并发，允许同时扫描几个目标")
-	// todo Paras其他参数
+
+	// -sn : 指定完整嗅探扫描
+	flag.BoolVar(&terminalParams.Sniffer, "sn", false, "指定完整嗅探扫描")
+
+	// -sn-p ：指定端口扫描
+	flag.BoolVar(&terminalParams.PortScan, "sn-p", false, "指定端口扫描")
+
+	// -p : 指定端口扫描端口范围
+	flag.StringVar(&terminalParams.PortList, "p", "top1000", "指定端口扫描")
+
+	// -sn-sub : 指定子域探测
+	flag.BoolVar(&terminalParams.SubDomain, "sn-sub", false, "指定子域探测")
+
+	// -sn-sp : 指定网站爬虫
+	flag.BoolVar(&terminalParams.Spider, "sn-sp", false, "指定网站爬虫")
+
+	// -sn-fp : 指定指纹识别
+	flag.BoolVar(&terminalParams.Fingerprint, "sn-fp", false, "指定指纹识别")
+
+	// -vs : 指定全漏洞扫描
+	flag.BoolVar(&terminalParams.vulscan, "vs", false, "指定全漏洞扫描")
+
+	// -vs-id : 指定具体漏洞编号扫描 例如：cve-2021-44228 (default "空值")
 
 	// 开始解析
 	flag.Parse()
 
+	fmt.Printf("terminalParams: %v\n", terminalParams)
+
 	// debug信息
 	logger.LogInfo("参数：用户设置目标："+terminalParams.UserInputTargetString, logger.LOG_TERMINAL)
-	logger.LogInfo(fmt.Sprintf("参数：是否跳过Ping扫描：%t", terminalParams.IsPn), logger.LOG_TERMINAL)
+	logger.LogInfo(fmt.Sprintf("参数: 是否跳过Ping扫描: %t", terminalParams.IsPn), logger.LOG_TERMINAL)
 	logger.LogInfo("参数：线程数："+strconv.Itoa(terminalParams.ThreadsNumber), logger.LOG_TERMINAL)
 
 	return
