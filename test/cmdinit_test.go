@@ -1,19 +1,13 @@
 package test
 
-import (
-	"fmt"
-	cmdinit "poodle/internal/cmd_parser"
-	"testing"
-)
+// func TestMain(m *testing.M) {
 
-func TestMain(m *testing.M) {
-
-	cmdPars := cmdinit.CMDParseInit()
-	cmdPars.CMDUserInputParse()
-	fmt.Println(cmdPars.IsPingScan)
-	fmt.Println(cmdPars.UserInputTargetString)
-	//m.Run()
-}
+// 	cmdPars := cmdinit.CMDParseInit()
+// 	cmdPars.CMDUserInputParse()
+// 	fmt.Println(cmdPars.IsPingScan)
+// 	fmt.Println(cmdPars.UserInputTargetString)
+// 	//m.Run()
+// }
 
 // func TestExample1(t *testing.T) {
 // 	fmt.Println("其他测试函数1")
