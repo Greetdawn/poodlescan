@@ -1,19 +1,17 @@
 package asset_host
 
 import (
-	"fmt"
 	"poodle/pkg/common"
 	"poodle/pkg/logger"
 	"sync"
 )
 
+// 多线程同步追加资产信息
 var mutex sync.Mutex
-var G_Sniffer *Sniffer
 
-func init() {
-	fmt.Print("sdfsdgf")
-	G_Sniffer = new(Sniffer)
-}
+// 嗅探器单例
+var pSniffer *Sniffer
+var once sync.Once
 
 // sniffer的接口类
 type ISniffer interface {
@@ -51,18 +49,10 @@ type Sniffer struct {
 
 // 用单例的方式获取嗅探器对象
 func GetSnifferObj() *Sniffer {
-	// if G_Sniffer == nil {
-	// 	mutex.Lock() //加锁，防止多线程异常
-	// 	if G_Sniffer == nil {
-	// 		G_Sniffer = &Sniffer{}
-	// 	}
-	// 	mutex.Unlock()
-	// }
-	// return G_Sniffer
-	// once.Do(func() {
-	// 	G_Sniffer = &Sniffer{}
-	// })
-	return G_Sniffer
+	once.Do(func() {
+		pSniffer = &Sniffer{}
+	})
+	return pSniffer
 }
 
 // 追加存活资产信息
@@ -111,4 +101,14 @@ func (this *Sniffer) PrintAssetHostList() {
 // 嗅探目标主机是否存活
 func (this *Sniffer) IsHostAlived(target string) bool {
 	return common.IsHostAlived(target)
+}
+
+// 嗅探目标主机开放端口信息
+func (this *Sniffer) SnifferHostOpenedPorts(target string) []int {
+	return ScanHostOpenedPorts(target)
+}
+
+// 嗅探域名的子域信息
+func (this *Sniffer) SniffSubDomain(domain string) []string {
+	return ScanSubDomain(domain)
 }

@@ -213,8 +213,6 @@ func isIpRange(ipstr string) bool {
 	return true
 }
 
-var mutex sync.Mutex
-
 // 执行功能
 func run(task *common.TASKUint) {
 	var assetHost asset_host.AssetHost
@@ -229,17 +227,21 @@ func run(task *common.TASKUint) {
 	var alived = true
 	// ping扫功能
 	if task.ControlCode&common.CC_PING_SCAN == common.CC_PING_SCAN {
-		alived = asset_host.G_Sniffer.IsHostAlived(task.Target)
+		alived = asset_host.GetSnifferObj().IsHostAlived(task.Target)
 	}
 	// 端口扫描功能
 	if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
 		// 执行端口扫描
 	}
+	// 子域扫描功能
+	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
+		// 执行子域扫描功能
+	}
 
 	// 根据存活信息分别存放
 	if alived {
-		asset_host.G_Sniffer.AppendAlivedAssetHost(assetHost)
+		asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
 	} else {
-		asset_host.G_Sniffer.AppendDiedAssetHost(assetHost)
+		asset_host.GetSnifferObj().AppendDiedAssetHost(assetHost)
 	}
 }
