@@ -102,3 +102,13 @@ func (this *Sniffer) PrintAssetHostList() {
 func (this *Sniffer) IsHostAlived(target string) bool {
 	return common.IsHostAlived(target)
 }
+
+// 嗅探目标主机开放端口信息
+func (this *Sniffer) SnifferHostOpenedPorts(target string) []int {
+	return ScanHostOpenedPorts(target)
+}
+
+// 嗅探域名的子域信息
+func (this *Sniffer) SniffSubDomain(domain string) []string {
+	return ScanSubDomain(domain)
+}

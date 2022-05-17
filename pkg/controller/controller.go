@@ -233,6 +233,10 @@ func run(task *common.TASKUint) {
 	if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
 		// 执行端口扫描
 	}
+	// 子域扫描功能
+	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
+		// 执行子域扫描功能
+	}
 
 	// 根据存活信息分别存放
 	if alived {
