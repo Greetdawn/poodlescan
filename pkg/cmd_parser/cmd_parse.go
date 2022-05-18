@@ -3,6 +3,7 @@ package cmdparser
 import (
 	"flag"
 	"fmt"
+	"os"
 	"poodle/pkg/common"
 	controllor "poodle/pkg/controller"
 	"poodle/pkg/logger"
@@ -45,6 +46,9 @@ func GenrateTasks(tp *TerminalParams, cc uint) error {
 
 // 根据命令行输入初始化TerminalParams结构体
 func ParsingUserTerminalLine() (terminalParams TerminalParams, err error) {
+	// 获取终端参数的数量
+	numberArgs := len(os.Args)
+
 	// -t : 设置用户提供的目标
 	flag.StringVar(&terminalParams.UserInputTargetString, "t", "", "设置扫描目标")
 
@@ -61,7 +65,7 @@ func ParsingUserTerminalLine() (terminalParams TerminalParams, err error) {
 	flag.BoolVar(&terminalParams.PortScan, "sn-p", false, "指定端口扫描")
 
 	// -p : 指定端口扫描端口范围
-	flag.StringVar(&terminalParams.PortList, "p", "top1000", "指定端口扫描")
+	flag.StringVar(&terminalParams.PortList, "p", "top1000", "指定扫描端口范围 例如:80,8080,80-1000 (default top1000)")
 
 	// -sn-sub : 指定子域探测
 	flag.BoolVar(&terminalParams.SubDomain, "sn-sub", false, "指定子域探测")
@@ -80,6 +84,7 @@ func ParsingUserTerminalLine() (terminalParams TerminalParams, err error) {
 	// 开始解析
 	flag.Parse()
 
+	fmt.Printf("%d\n", numberArgs)
 	fmt.Printf("terminalParams: %v\n", terminalParams)
 
 	// debug信息

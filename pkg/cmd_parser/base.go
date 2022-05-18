@@ -34,11 +34,6 @@ type TerminalParams struct {
 	vulscan bool
 }
 
-// 获取一个TerminalParams对象
-func GetTerminalParamObj() *TerminalParams {
-	return &TerminalParams{}
-}
-
 // 根据终端参数结构体生成控制码
 func (this *TerminalParams) GenerateControlCode() (controlCode uint) {
 	controlCode = 0
@@ -51,5 +46,18 @@ func (this *TerminalParams) GenerateControlCode() (controlCode uint) {
 
 	// 端口扫描
 	controlCode |= common.CC_PORT_SCAN
+
+	// 子域探测
+	controlCode |= common.CC_SUB_DOMAIN_SCAN
+
+	// 爬虫功能
+	controlCode |= common.CC_SPIDER
+
+	// 指纹识别
+	controlCode |= common.CC_FINGERPRINT
+
+	// 全漏洞扫描
+	controlCode |= common.CC_VULSCAN
+
 	return controlCode
 }

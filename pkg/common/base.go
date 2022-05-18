@@ -51,7 +51,8 @@ const (
 	CC_VULSCAN_DIRSEARCH uint = 2048
 	//12: 服务端口爆破功能, 针对应用服务端口进行口令爆破
 	CC_VULSCAN_BURST uint = 4096
-	//13: 保留
+	//13: 全漏洞扫描功能，针对单一目标实现平台全poc扫描
+	CC_VULSCAN uint = 8192
 	//14: 保留
 	//15: 保留
 
