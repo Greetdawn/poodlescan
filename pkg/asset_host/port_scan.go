@@ -127,7 +127,7 @@ func _TCPOrUDPPortScan_POODLE(target, proto string, ports ...string) sync.Map {
 
 					v = string(data)
 					resMap.Store(p, v)
-					logger.LogInfo(fmt.Sprintf("[%s] 开放 [%s]端口  %s", logger.FgGreen(target), logger.FgGreen(p), logger.FgGreen(v)), logger.LOG_TERMINAL)
+					logger.LogInfo(fmt.Sprintf("%21s >> %14s端口 %s", logger.FgGreen(target), logger.FgGreen(p), logger.FgGreen(v)), logger.LOG_TERMINAL)
 				}
 			}
 		}()
