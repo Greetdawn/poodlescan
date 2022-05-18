@@ -313,6 +313,37 @@ func run(task *common.TASKUint) {
 	// 子域扫描功能
 	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
 		// 执行子域扫描功能
+		logger.LogInfo("执行子域扫描", logger.LOG_TERMINAL)
+	}
+
+	// 爬虫
+	if task.ControlCode&common.CC_SPIDER == common.CC_SPIDER {
+		// 执行爬虫功能
+		logger.LogInfo("执行爬虫功能", logger.LOG_TERMINAL)
+	}
+
+	// 指纹探测
+	if task.ControlCode&common.CC_FINGERPRINT == common.CC_FINGERPRINT {
+		// 执行指纹探测功能
+		logger.LogInfo("执行指纹探测功能", logger.LOG_TERMINAL)
+	}
+
+	// 全漏洞扫描
+	if task.ControlCode&common.CC_VULSCAN == common.CC_VULSCAN {
+		// 执行全漏洞扫描功能
+		logger.LogInfo("执行全漏洞扫描功能", logger.LOG_TERMINAL)
+	}
+
+	// 指定目录探测扫描
+	if task.ControlCode&common.CC_VULSCAN_DIRSEARCH == common.CC_VULSCAN_DIRSEARCH {
+		// 执行目录探测扫描功能
+		logger.LogInfo("执行目录探测扫描功能", logger.LOG_TERMINAL)
+	}
+
+	// 指定服务端口爆破
+	if task.ControlCode&common.CC_VULSCAN_BURST == common.CC_VULSCAN_BURST {
+		// 执行服务端口爆破功能
+		logger.LogInfo("执行服务端口爆破功能", logger.LOG_TERMINAL)
 	}
 
 	// 多线程同步写入资产信息

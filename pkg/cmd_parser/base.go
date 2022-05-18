@@ -106,12 +106,11 @@ func (this *TerminalParams) GenerateControlCode() (controlCode uint) {
 
 	if !(this.PortScan || this.SubDomain || this.Spider || this.Fingerprint) {
 		controlCode = controlCode ^ common.CC_PING_SCAN
-		fmt.Println("ddddddd")
 	}
+
 	// 全漏洞扫描
 	if this.Vulscan {
 		controlCode |= common.CC_VULSCAN
-
 	}
 
 	// 指定目录探测扫描
