@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"poodle/pkg/asset_host"
 	cmdparser "poodle/pkg/cmd_parser"
+	"poodle/pkg/common"
 	controllor "poodle/pkg/controller"
 	"poodle/pkg/logger"
 	"sync"
@@ -15,6 +16,10 @@ func main() {
 
 	// 1. 解析用户输入的命令行
 	var err error
+
+	// 输出banner信息
+	common.ShowBanner()
+
 	cmdparser.G_TerminalParam, err = cmdparser.ParsingUserTerminalLine()
 	if err != nil {
 		// 解析用户的输入目标发生错误。
