@@ -51,7 +51,7 @@ func GenrateTasks(tp *TerminalParams, cc uint) error {
 }
 
 // 根据命令行输入初始化TerminalParams结构体
-func ParsingUserTerminalLine() (terminalParams TerminalParams, err error) {
+func ParsingUserTerminalLine(terminalParams *TerminalParams) (err error) {
 	// 获取终端参数的数量
 	numberArgs := len(os.Args)
 
@@ -118,14 +118,10 @@ func ParsingUserTerminalLine() (terminalParams TerminalParams, err error) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("%#v\n", os.Args)
-	fmt.Printf("%d\n", numberArgs)
-	fmt.Printf("terminalParams: %v\n", terminalParams)
-
 	// debug信息
 	logger.LogInfo("参数：用户设置目标："+terminalParams.UserInputTargetString, logger.LOG_TERMINAL)
 	logger.LogInfo(fmt.Sprintf("参数: 是否跳过Ping扫描: %t", terminalParams.IsPn), logger.LOG_TERMINAL)
 	logger.LogInfo("参数：线程数："+strconv.Itoa(terminalParams.ThreadsNumber), logger.LOG_TERMINAL)
-
+	fmt.Printf("terminalParams: %v\n", *terminalParams)
 	return
 }

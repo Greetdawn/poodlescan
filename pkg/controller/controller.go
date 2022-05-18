@@ -219,18 +219,19 @@ func isIpRange(ipstr string) bool {
 }
 
 // 将端口的描述性字符串转成端口列表，避免每次都要重新解析一个端口列表
-var _isParsed = false
-var _ports []string
+// var _isParsed = false
+// var _ports []string
 
 // 将端口的描述性字符串转成端口列表
 func getPorts(str string) (ports []string, err error) {
-	if _isParsed {
-		return _ports, nil
-	}
+	// if _isParsed {
+	// 	ports =
+	// 	return _ports, nil
+	// }
 	if str == "top1000" {
 		ports = asset_host.SCAN_PORT_POODLE_COMMON_PORTS
-		_isParsed = true
-		_ports = ports
+		// _isParsed = true
+		// _ports = ports
 		return
 	}
 
@@ -251,8 +252,8 @@ func getPorts(str string) (ports []string, err error) {
 		for ; p0 <= p1; p0++ {
 			ports = append(ports, strconv.Itoa(p0))
 		}
-		_isParsed = true
-		_ports = ports
+		// _isParsed = true
+		// _ports = ports
 		return
 	}
 	return

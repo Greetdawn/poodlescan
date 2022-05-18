@@ -70,7 +70,7 @@ var (
 func ScanHostOpenedPorts(target string) (portMap sync.Map) {
 	switch Scan_Port_Method {
 	case SPM_POODLE:
-		return _TCPOrUDPPortScan_POODLE(target, Scan_Port_Proto, SCAN_PORT_POODLE_COMMON_PORTS...)
+		return _TCPOrUDPPortScan_POODLE(target, Scan_Port_Proto, SCAN_PORT_PORTS...)
 	case SPM_NMAP:
 		return _TCPOrUDPPortScan_NMAP(target, Scan_Port_Proto, SCAN_PORT_PORTS...)
 	default:
@@ -127,7 +127,7 @@ func _TCPOrUDPPortScan_POODLE(target, proto string, ports ...string) sync.Map {
 
 					v = string(data)
 					resMap.Store(p, v)
-					logger.LogInfo(fmt.Sprintf("%21s >> %14s端口 %s", logger.FgGreen(target), logger.FgGreen(p), logger.FgGreen(v)), logger.LOG_TERMINAL)
+					logger.LogInfo(fmt.Sprintf("%22s >> %15s端口 %s", logger.FgGreen(target), logger.FgGreen(p), logger.FgGreen(v)), logger.LOG_TERMINAL)
 				}
 			}
 		}()

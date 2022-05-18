@@ -20,7 +20,7 @@ func main() {
 	// 输出banner信息
 	common.ShowBanner()
 
-	cmdparser.G_TerminalParam, err = cmdparser.ParsingUserTerminalLine()
+	err = cmdparser.ParsingUserTerminalLine(&cmdparser.G_TerminalParam)
 	if err != nil {
 		// 解析用户的输入目标发生错误。
 		logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
