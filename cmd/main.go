@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"poodle/pkg/asset_host"
 	cmdparser "poodle/pkg/cmd_parser"
 	"poodle/pkg/common"
@@ -24,6 +25,7 @@ func main() {
 	if err != nil {
 		// 解析用户的输入目标发生错误。
 		logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
+		return
 	}
 	// 2. 生成CC 控制码
 	cc := cmdparser.G_TerminalParam.GenerateControlCode()
@@ -39,6 +41,8 @@ func main() {
 		if err != nil {
 			// 解析用户的输入目标发生错误。
 			logger.LogError(fmt.Sprintf("err: %v\n", err), logger.LOG_TERMINAL_FILE)
+			os.Exit(0)
+			return
 		}
 	}()
 
