@@ -2,7 +2,6 @@ package asset_host
 
 import (
 	"poodle/pkg/common"
-	"strings"
 	"sync"
 )
 
@@ -65,22 +64,15 @@ func (this *AssetHost) Init() {
 	this.OpenedPorts = make(map[string]string)
 }
 
+var mutexOfAppendOpenedPorts sync.Mutex
+
 func (this *AssetHost) AppendOpenedPortMap(portMap sync.Map) {
 	portMap.Range(func(key, value interface{}) bool {
 		k := key.(string)
 		v := value.(string)
-		v = strings.ReplaceAll(v, "\r", "")
-		v = strings.ReplaceAll(v, "\n", "")
-		var data []byte
-		for i := 0; i < len(v); i++ {
-			if v[i] != 0 {
-				data = append(data, byte(v[i]))
-			} else {
-				break
-			}
-		}
-		v = string(data)
+		mutexOfAppendOpenedPorts.Lock()
 		this.OpenedPorts[k] = v
+		mutexOfAppendOpenedPorts.Unlock()
 		return true
 	})
 }
