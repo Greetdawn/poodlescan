@@ -101,8 +101,8 @@ func (this *Sniffer) IsHostAlived(target string) bool {
 }
 
 // 嗅探目标主机开放端口信息
-func (this *Sniffer) SnifferHostOpenedPorts(target string, mode ScanPortMode) sync.Map {
-	return ScanHostOpenedPorts(target, mode)
+func (this *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
+	return ScanHostOpenedPorts(target)
 }
 
 // 嗅探域名的子域信息

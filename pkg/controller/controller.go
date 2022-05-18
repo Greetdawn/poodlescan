@@ -254,7 +254,7 @@ func run(task *common.TASKUint) {
 			go func() {
 				defer runSync.Done()
 				// mutexOfAppendOpenedPorts.Lock()
-				assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target, asset_host.SP_POODLE_COMMON_MODE))
+				assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
 				// mutexOfAppendOpenedPorts.Unlock()
 			}()
 		}

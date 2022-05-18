@@ -64,10 +64,13 @@ var (
 	Scan_Port_Threads int = 200
 	// 超时时间（秒）
 	Scan_Port_Time_Out int = 5
+
+	// 端口扫描模式
+	G_Scan_Port_Mode ScanPortMode
 )
 
-func ScanHostOpenedPorts(target string, mode ScanPortMode) (portMap sync.Map) {
-	switch mode {
+func ScanHostOpenedPorts(target string) (portMap sync.Map) {
+	switch G_Scan_Port_Mode {
 	case SP_POODLE_COMMON_MODE:
 		return _TCPOrUDPPortScan_POODLE(target, Scan_Port_Proto, SCAN_PORT_POODLE_COMMON_PORTS...)
 	case SP_CUSTOM_MODE:
