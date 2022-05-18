@@ -17,14 +17,11 @@ import (
 	"github.com/Ullaakut/nmap/v2"
 )
 
-type ScanPortMode int
+type ScanPortMethod int
 
 const (
-	SP_POODLE_COMMON_MODE ScanPortMode = 0
-	SP_CUSTOM_MODE        ScanPortMode = 1
-	SP_NAMP_COMMON_MODE   ScanPortMode = 2
-	SP_top_1000           ScanPortMode = 3
-	SP_top_10000          ScanPortMode = 4
+	SPM_POODLE ScanPortMethod = 100
+	SPM_NMAP   ScanPortMethod = 200
 )
 
 var (
@@ -58,25 +55,24 @@ var (
 		"41523", "41524", "44334", "44818", "45230", "46823", "46824", "47001", "47002", "48899", "49152", "50000", "50001", "50002", "50003",
 		"50004", "50013", "50500", "50501", "50502", "50503", "50504", "52302", "55553", "57772", "62078", "62514", "65535"}
 	// 扫描端口时，用户指定使用的端口
-	SCAN_PORT_CUSTOM_PORTS []string
+	SCAN_PORT_PORTS []string
 
 	// 线程数
 	Scan_Port_Threads int = 200
 	// 超时时间（秒）
 	Scan_Port_Time_Out int = 5
 
-	// 端口扫描模式
-	G_Scan_Port_Mode ScanPortMode
+	// 选择用那种方法来扫描端口
+	// 默认下用泰迪自身的方法扫描
+	Scan_Port_Method ScanPortMethod = SPM_POODLE
 )
 
 func ScanHostOpenedPorts(target string) (portMap sync.Map) {
-	switch G_Scan_Port_Mode {
-	case SP_POODLE_COMMON_MODE:
+	switch Scan_Port_Method {
+	case SPM_POODLE:
 		return _TCPOrUDPPortScan_POODLE(target, Scan_Port_Proto, SCAN_PORT_POODLE_COMMON_PORTS...)
-	case SP_CUSTOM_MODE:
-		return _TCPOrUDPPortScan_POODLE(target, Scan_Port_Proto, SCAN_PORT_CUSTOM_PORTS...)
-	case SP_NAMP_COMMON_MODE:
-		return _TCPOrUDPPortScan_NMAP(target, Scan_Port_Proto, SCAN_PORT_CUSTOM_PORTS...)
+	case SPM_NMAP:
+		return _TCPOrUDPPortScan_NMAP(target, Scan_Port_Proto, SCAN_PORT_PORTS...)
 	default:
 		return _TCPOrUDPPortScan_POODLE(target, Scan_Port_Proto)
 	}
@@ -131,7 +127,7 @@ func _TCPOrUDPPortScan_POODLE(target, proto string, ports ...string) sync.Map {
 
 					v = string(data)
 					resMap.Store(p, v)
-					logger.LogInfo(fmt.Sprintf("[%s] 开放 [%s]端口  %s", logger.FgGreen(target), logger.FgGreen(p), logger.FgGreen(v)), logger.LOG_TERMINAL)
+					logger.LogInfo(fmt.Sprintf("%21s >> %14s端口 %s", logger.FgGreen(target), logger.FgGreen(p), logger.FgGreen(v)), logger.LOG_TERMINAL)
 				}
 			}
 		}()

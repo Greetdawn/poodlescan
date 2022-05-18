@@ -7,6 +7,7 @@ import (
 	"net"
 	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
+	"poodle/pkg/logger"
 	"regexp"
 	"sort"
 	"strconv"
@@ -217,15 +218,57 @@ func isIpRange(ipstr string) bool {
 	return true
 }
 
+// 将端口的描述性字符串转成端口列表，避免每次都要重新解析一个端口列表
+var _isParsed = false
+var _ports []string
+
+// 将端口的描述性字符串转成端口列表
+func getPorts(str string) (ports []string, err error) {
+	if _isParsed {
+		return _ports, nil
+	}
+	if str == "top1000" {
+		ports = asset_host.SCAN_PORT_POODLE_COMMON_PORTS
+		_isParsed = true
+		_ports = ports
+		return
+	}
+
+	// 端口段
+	if strings.Contains(str, "-") {
+		strs := strings.Split(str, "-")
+		p0, e0 := strconv.Atoi(strs[0])
+		p1, e1 := strconv.Atoi(strs[1])
+		if e0 != nil || e1 != nil {
+			err = errors.New("端口段格式错误。端口段输入例如：1000-2000")
+			return
+		}
+		if p0 > p1 {
+			tmp := p1
+			p1 = p0
+			p0 = tmp
+		}
+		for ; p0 <= p1; p0++ {
+			ports = append(ports, strconv.Itoa(p0))
+		}
+		_isParsed = true
+		_ports = ports
+		return
+	}
+	return
+}
+
 var runSync sync.WaitGroup
 
 // 执行功能
 func run(task *common.TASKUint) {
 	// 嗅探器对象
 	sniffer := asset_host.GetSnifferObj()
-
+	// 资产主机
 	var assetHost asset_host.AssetHost
 	assetHost.Init()
+
+	// 设置资产的初步信息，判断是不是IP还是域名，填入对应的字段中
 	if task.TargetType&common.TASKUint_TargetType_IP == common.TASKUint_TargetType_IP {
 		assetHost.IsIP = true
 		assetHost.RealIP = task.Target
@@ -239,32 +282,43 @@ func run(task *common.TASKUint) {
 	if task.ControlCode&common.CC_PING_SCAN == common.CC_PING_SCAN {
 		alived = sniffer.IsHostAlived(task.Target)
 	}
+	// 如果资产不存活，其他功能都不用执行
+	if !alived {
+		mutexOfAppendAsset.Lock()
+		asset_host.GetSnifferObj().AppendDiedAssetHost(assetHost)
+		mutexOfAppendAsset.Unlock()
+		return
+	}
+
+	// 端口扫描功能
+	if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
+		// 分析端口列表
+		portStr := task.Params["ports"]
+		var err error
+		asset_host.SCAN_PORT_PORTS, err = getPorts(portStr)
+		if err != nil {
+			logger.LogError(err.Error(), logger.LOG_TERMINAL_FILE)
+			return
+		}
+
+		// 执行端口扫描
+		runSync.Add(1)
+		go func() {
+			defer runSync.Done()
+			assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
+		}()
+	}
 
 	// 子域扫描功能
 	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
 		// 执行子域扫描功能
 	}
 
-	// 根据存活信息分别存放
-	if alived {
-		// 端口扫描功能
-		if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
-			//
-			runSync.Add(1)
-			go func() {
-				defer runSync.Done()
-				// mutexOfAppendOpenedPorts.Lock()
-				assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
-				// mutexOfAppendOpenedPorts.Unlock()
-			}()
-		}
-		mutexOfAppendAsset.Lock()
-		asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
-		mutexOfAppendAsset.Unlock()
-	} else {
-		mutexOfAppendAsset.Lock()
-		asset_host.GetSnifferObj().AppendDiedAssetHost(assetHost)
-		mutexOfAppendAsset.Unlock()
-	}
+	// 多线程同步写入资产信息
+	mutexOfAppendAsset.Lock()
+	asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
+	mutexOfAppendAsset.Unlock()
+
+	// waiting9l ui
 	runSync.Wait()
 }

@@ -60,21 +60,17 @@ func NoCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncod
 	enc = nil
 }
 
-func getEncoder() zapcore.Encoder {
-	return zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-}
-
 // 自定义Zap日志编码器
-// func getEncoder() zapcore.Encoder {
-// 	encoderConfig := zap.NewProductionEncoderConfig()
-// 	encoderConfig.EncodeTime = CustomTimeEncoder
-// 	// zap库默认
-// 	//encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-// 	encoderConfig.EncodeLevel = CustomLevelEncoder
-// 	// 关闭显示调用者信息
-// 	encoderConfig.EncodeCaller = NoCallerEncoder
-// 	return zapcore.NewConsoleEncoder(encoderConfig)
-// }
+func getEncoder() zapcore.Encoder {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = CustomTimeEncoder
+	// zap库默认
+	//encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	encoderConfig.EncodeLevel = CustomLevelEncoder
+	// 关闭显示调用者信息
+	encoderConfig.EncodeCaller = NoCallerEncoder
+	return zapcore.NewConsoleEncoder(encoderConfig)
+}
 
 func init() {
 	initLogger()
@@ -82,8 +78,8 @@ func init() {
 
 func initLogger() {
 	writeSyncer := getLogWriter()
-	//encoder := getEncoder()
-	core := zapcore.NewCore(nil, writeSyncer, zapcore.FatalLevel)
+	encoder := getEncoder()
+	core := zapcore.NewCore(encoder, writeSyncer, zapcore.FatalLevel)
 	// 不用打印调用者 logger := zap.New(core, zap.AddCaller())
 	logger := zap.New(core)
 	SugarLogger = logger.Sugar()
@@ -156,5 +152,7 @@ func getShortCallerInfo() string {
 }
 
 func logTeriminal(level, log string) {
-	fmt.Printf(fmt.Sprintf("[%s] %s %s %s\n", FgGreen(time.Now().Format("2006-01-02 15:04:05")), level, getShortCallerInfo(), log))
+	// 不显示调用者
+	fmt.Printf(fmt.Sprintf("[%s] %s %s\n", FgGreen(time.Now().Format("2006-01-02 15:04:05")), level, log))
+	// fmt.Printf(fmt.Sprintf("[%s] %s %s %s\n", FgGreen(time.Now().Format("2006-01-02 15:04:05")), level, getShortCallerInfo(), log))
 }
