@@ -259,10 +259,9 @@ func getPorts(str string) (ports []string, err error) {
 	return
 }
 
-var runSync sync.WaitGroup
-
 // 执行功能
 func run(task *common.TASKUint) {
+	var runSync sync.WaitGroup
 	// 嗅探器对象
 	sniffer := asset_host.GetSnifferObj()
 	// 资产主机
@@ -308,6 +307,7 @@ func run(task *common.TASKUint) {
 			defer runSync.Done()
 			assetHost.AppendOpenedPortMap(sniffer.SnifferHostOpenedPorts(task.Target))
 		}()
+		runSync.Wait()
 	}
 
 	// 子域扫描功能
@@ -319,7 +319,4 @@ func run(task *common.TASKUint) {
 	mutexOfAppendAsset.Lock()
 	asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
 	mutexOfAppendAsset.Unlock()
-
-	// waiting9l ui
-	runSync.Wait()
 }
