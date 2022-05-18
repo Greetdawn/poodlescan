@@ -3,6 +3,7 @@ package cmdparser
 import (
 	"fmt"
 	"poodle/pkg/common"
+	"poodle/pkg/logger"
 )
 
 // 全局变量，保存终端命令行参数结构体
@@ -103,24 +104,25 @@ func (this *TerminalParams) GenerateControlCode() (controlCode uint) {
 		controlCode |= common.CC_FINGERPRINT
 	}
 
+	if !(this.PortScan || this.SubDomain || this.Spider || this.Fingerprint) {
+		controlCode = controlCode ^ common.CC_PING_SCAN
+	}
 	// 全漏洞扫描
 	if this.Vulscan {
 		controlCode |= common.CC_VULSCAN
-		controlCode = controlCode ^ common.CC_PING_SCAN
+
 	}
 
 	// 指定目录探测扫描
 	if this.VulscanDirsearch {
 		controlCode |= common.CC_VULSCAN_DIRSEARCH
-		controlCode = controlCode ^ common.CC_PING_SCAN
 	}
 
 	// 指定服务端口爆破
 	if this.VulscanBurst {
 		controlCode |= common.CC_VULSCAN_BURST
-		controlCode = controlCode ^ common.CC_PING_SCAN
 	}
 
-	fmt.Println(controlCode)
+	logger.LogInfo(fmt.Sprintf("控制码：%032b", controlCode), logger.LOG_TERMINAL)
 	return controlCode
 }
