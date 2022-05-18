@@ -34,11 +34,17 @@ func GenrateTasks(tp *TerminalParams, cc uint) error {
 	// 新建任务通道
 	common.G_TaskChannal = make(chan *common.TASKUint, 10000)
 	for _, target := range targets {
+		newTask := new(common.TASKUint)
+		newTask.Params = make(map[string]string)
+		newTask.Target = target.Target
+		newTask.ControlCode = cc
+		newTask.Params["ports"] = tp.PortList
 		if target.IsIp {
-			common.G_TaskChannal <- &common.TASKUint{Target: target.Target, TargetType: common.TASKUint_TargetType_IP, ControlCode: cc}
+			newTask.TargetType = common.TASKUint_TargetType_IP
 		} else {
-			common.G_TaskChannal <- &common.TASKUint{Target: target.Target, TargetType: common.TASKUint_TargetType_Domain, ControlCode: cc}
+			newTask.TargetType = common.TASKUint_TargetType_Domain
 		}
+		common.G_TaskChannal <- newTask
 	}
 	close(common.G_TaskChannal)
 	return nil
