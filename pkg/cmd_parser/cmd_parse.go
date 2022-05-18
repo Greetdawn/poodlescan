@@ -113,7 +113,7 @@ func ParsingUserTerminalLine(terminalParams *TerminalParams) (err error) {
 	flag.Parse()
 
 	// 根据用户参数输入的数量判断执行完整扫描流程
-	if numberArgs == 1 {
+	if numberArgs <= 3 {
 		logger.LogWarn("参数输入不正确, 请输入 -h 获取工具帮助信息", logger.LOG_TERMINAL)
 		os.Exit(1)
 	}
