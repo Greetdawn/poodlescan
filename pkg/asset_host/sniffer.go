@@ -81,8 +81,6 @@ func (this *Sniffer) StartDomainSniff() {
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
-	common.CreateTable()
-
 	var wait1 sync.WaitGroup
 
 	wait1.Add(2)
@@ -106,6 +104,7 @@ func (this *Sniffer) PrintAssetHostList() {
 				fmt.Println(tab)
 			}()
 		}
+		wait_11.Wait()
 	}()
 
 	go func() {
@@ -128,6 +127,7 @@ func (this *Sniffer) PrintAssetHostList() {
 				fmt.Println(tab)
 			}()
 		}
+		wait_11.Wait()
 	}()
 
 	wait1.Wait()
