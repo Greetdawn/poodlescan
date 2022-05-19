@@ -97,7 +97,7 @@ func (this *Sniffer) PrintAssetHostList() {
 				} else {
 					tab.AddRow([]string{" ", " ", key, value})
 				}
-				common.AppendAsset2Sql(asset.RealIP, key, value, "tcp")
+				common.AppendAsset2Sql(asset.RealIP, "tcp", key, value)
 			}
 		}
 		fmt.Println(tab)

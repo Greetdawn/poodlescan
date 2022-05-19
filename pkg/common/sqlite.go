@@ -29,20 +29,20 @@ func InitSqlite(sqlFile string) {
     CREATE TABLE IF NOT EXISTS PortInfo(
         uid INTEGER PRIMARY KEY AUTOINCREMENT,
         host VARCHAR(64) NULL,
+		proto varchar(32) null,
         port VARCHAR(64) NULL,
-		portInfo varchar(64) null,
-		proto varchar(32) null
+		portInfo varchar(64) null
     );
     `
 	G_Sql_DB_Obj.Exec(createSqlTable)
 }
 
-func AppendAsset2Sql(host, port, portInfo, proto string) {
-	stmt, err := G_Sql_DB_Obj.Prepare("INSERT INTO PortInfo(host, port, portInfo, proto) values(?,?,?,?)")
+func AppendAsset2Sql(host, proto, port, portInfo string) {
+	stmt, err := G_Sql_DB_Obj.Prepare("INSERT INTO PortInfo(host, proto, port, portInfo) values(?,?,?,?)")
 	if err != nil {
 		panic(err)
 	}
-	stmt.Exec(host, port, portInfo, proto)
+	stmt.Exec(host, proto, port, portInfo)
 }
 
 func CloseDB() {
