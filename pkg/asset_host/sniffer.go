@@ -1,9 +1,12 @@
 package asset_host
 
 import (
+	"fmt"
 	"poodle/pkg/common"
 	"poodle/pkg/logger"
 	"sync"
+
+	"github.com/liushuochen/gotable"
 )
 
 // 嗅探器单例
@@ -78,15 +81,27 @@ func (this *Sniffer) StartDomainSniff() {
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
-	logger.LogInfo("资产主机信息：", logger.LOG_TERMINAL_FILE)
+	common.CreateTable()
+
 	for _, asset := range this.AlivedAssetHosts {
+
+		//CmdTable.AddRow([]string{ip, alivedStr, openPorts})
+		var first bool = true
+		tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
 		// 全部打印
 		// logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
-		logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
-		logger.LogNoFormat("    开放端口信息：\n", logger.LOG_TERMINAL)
+		//logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
+		//logger.LogNoFormat("    开放端口信息：\n", logger.LOG_TERMINAL)
 		for key, value := range asset.OpenedPorts {
-			logger.LogNoFormat("      "+key+"\t"+value+"\n", logger.LOG_TERMINAL)
+			if first {
+				tab.AddRow([]string{asset.RealIP, "存活", key, value})
+				first = false
+			} else {
+				tab.AddRow([]string{" ", " ", key, value})
+			}
 		}
+		fmt.Println(tab)
+
 	}
 
 	// logger.LogWarn("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
