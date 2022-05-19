@@ -44,7 +44,7 @@ type TerminalParams struct {
 	VulscanType string
 	// 指定用户自定义脚本扫描
 	VulscanDefined string
-	// 指定目录探测功能
+	// 指定功能目录探测
 	VulscanDirsearch bool
 	// 指定服务端口爆破
 	VulscanBurst bool
@@ -107,10 +107,10 @@ func (this *TerminalParams) GenerateControlCode() (controlCode uint) {
 	if !(this.PortScan || this.SubDomain || this.Spider || this.Fingerprint) {
 		controlCode = controlCode ^ common.CC_PING_SCAN
 	}
-
 	// 全漏洞扫描
 	if this.Vulscan {
 		controlCode |= common.CC_VULSCAN
+
 	}
 
 	// 指定目录探测扫描
