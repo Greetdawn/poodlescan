@@ -83,31 +83,54 @@ func (this *Sniffer) StartDomainSniff() {
 func (this *Sniffer) PrintAssetHostList() {
 	common.CreateTable()
 
-	for _, asset := range this.AlivedAssetHosts {
+	var wait1 sync.WaitGroup
 
-		//CmdTable.AddRow([]string{ip, alivedStr, openPorts})
-		var first bool = true
-		tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
-		// 全部打印
-		// logger.LogNoFormat(asset.ToString(), logger.LOG_TERMINAL_FILE)
-		//logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
-		//logger.LogNoFormat("    开放端口信息：\n", logger.LOG_TERMINAL)
-		for key, value := range asset.OpenedPorts {
-			if first {
-				tab.AddRow([]string{asset.RealIP, "存活", key, value})
-				first = false
-			} else {
-				tab.AddRow([]string{" ", " ", key, value})
-			}
+	wait1.Add(2)
+	go func() {
+		defer wait1.Done()
+		var wait_11 sync.WaitGroup
+		for _, asset := range this.AlivedAssetHosts {
+			wait_11.Add(1)
+			go func() {
+				defer wait_11.Done()
+				var first bool = true
+				tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
+				for key, value := range asset.OpenedPorts {
+					if first {
+						tab.AddRow([]string{asset.RealIP, "存活", key, value})
+						first = false
+					} else {
+						tab.AddRow([]string{" ", " ", key, value})
+					}
+				}
+				fmt.Println(tab)
+			}()
 		}
-		fmt.Println(tab)
+	}()
 
-	}
+	go func() {
+		defer wait1.Done()
+		var wait_11 sync.WaitGroup
+		for _, asset := range this.DiedAssetHosts {
+			wait_11.Add(1)
+			go func() {
+				defer wait_11.Done()
+				var first bool = true
+				tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
+				for key, value := range asset.OpenedPorts {
+					if first {
+						tab.AddRow([]string{asset.RealIP, "存活", key, value})
+						first = false
+					} else {
+						tab.AddRow([]string{" ", " ", key, value})
+					}
+				}
+				fmt.Println(tab)
+			}()
+		}
+	}()
 
-	// logger.LogWarn("不存活资产主机信息：", logger.LOG_TERMINAL_FILE)
-	// for _, asset := range this.DiedAssetHosts {
-	// 	logger.LogNoFormat("  "+asset.RealIP+"\n", logger.LOG_TERMINAL)
-	// }
+	wait1.Wait()
 }
 
 // 嗅探目标主机是否存活
