@@ -81,6 +81,8 @@ func (this *Sniffer) StartDomainSniff() {
 
 // 打印所有的资产信息
 func (this *Sniffer) PrintAssetHostList() {
+	common.InitSqlite("123456789.db")
+
 	for _, asset := range this.AlivedAssetHosts {
 		var first bool = true
 		tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
@@ -95,10 +97,13 @@ func (this *Sniffer) PrintAssetHostList() {
 				} else {
 					tab.AddRow([]string{" ", " ", key, value})
 				}
+				common.AppendAsset2Sql(asset.RealIP, key, value, "tcp")
 			}
 		}
 		fmt.Println(tab)
 	}
+
+	common.CloseDB()
 
 	//******** 处理不存活情况  *****************
 	// for _, asset := range this.DiedAssetHosts {

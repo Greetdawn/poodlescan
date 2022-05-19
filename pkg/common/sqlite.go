@@ -12,24 +12,39 @@ func checkErr(err error) {
 	}
 }
 
-// 打开或者创建数据库、表
-func init() {
-	db, err := sql.Open("sqlite3", "./foo.db")
-	checkErr(err)
-	sql_table := `
-    CREATE TABLE IF NOT EXISTS userinfo(
+var G_Sql_DB_Obj *sql.DB
+
+func InitSqlite(sqlFile string) {
+	if G_Sql_DB_Obj != nil {
+		return
+	}
+
+	var err error
+	G_Sql_DB_Obj, err = sql.Open("sqlite3", sqlFile)
+	if err != nil {
+		panic(err)
+	}
+
+	createSqlTable := `
+    CREATE TABLE IF NOT EXISTS PortInfo(
         uid INTEGER PRIMARY KEY AUTOINCREMENT,
-        username VARCHAR(64) NULL,
-        departname VARCHAR(64) NULL,
-        created DATE NULL
+        host VARCHAR(64) NULL,
+        port VARCHAR(64) NULL,
+		portInfo varchar(64) null,
+		proto varchar(32) null
     );
     `
-	db.Exec(sql_table)
+	G_Sql_DB_Obj.Exec(createSqlTable)
+}
 
-	stmt, err := db.Prepare("INSERT INTO userinfo(username, departname, created) values(?,?,?)")
-	checkErr(err)
-	stmt.Exec("wangshubo", "国务院", "2017-04-21")
-	//checkErr(err)
+func AppendAsset2Sql(host, port, portInfo, proto string) {
+	stmt, err := G_Sql_DB_Obj.Prepare("INSERT INTO PortInfo(host, port, portInfo, proto) values(?,?,?,?)")
+	if err != nil {
+		panic(err)
+	}
+	stmt.Exec(host, port, portInfo, proto)
+}
 
-	db.Close()
+func CloseDB() {
+	G_Sql_DB_Obj.Close()
 }
