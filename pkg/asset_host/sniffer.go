@@ -99,24 +99,27 @@ func (this *Sniffer) PrintAssetHostList() {
 		}
 		fmt.Println(tab)
 	}
-	for _, asset := range this.DiedAssetHosts {
-		var first bool = true
-		tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
 
-		if len(asset.OpenedPorts) == 0 {
-			tab.AddRow([]string{asset.RealIP, "不存活", "", ""})
-		} else {
-			for key, value := range asset.OpenedPorts {
-				if first {
-					tab.AddRow([]string{asset.RealIP, "不存活", key, value})
-					first = false
-				} else {
-					tab.AddRow([]string{" ", " ", key, value})
-				}
-			}
-		}
-		fmt.Println(tab)
-	}
+	//******** 处理不存活情况  *****************
+	// for _, asset := range this.DiedAssetHosts {
+	// 	var first bool = true
+	// 	tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
+
+	// 	if len(asset.OpenedPorts) == 0 {
+	// 		tab.AddRow([]string{asset.RealIP, "不存活", "", ""})
+	// 	} else {
+	// 		for key, value := range asset.OpenedPorts {
+	// 			if first {
+	// 				tab.AddRow([]string{asset.RealIP, "不存活", key, value})
+	// 				first = false
+	// 			} else {
+	// 				tab.AddRow([]string{" ", " ", key, value})
+	// 			}
+	// 		}
+	// 	}
+	// 	fmt.Println(tab)
+	// }
+	//******** 处理不存活情况  end *****************
 }
 
 // 嗅探目标主机是否存活
