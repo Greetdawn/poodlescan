@@ -1,6 +1,8 @@
 // @author: greetdawn
 // @date: 2022-05-10
 // 该文件主要实现主机存活检测基本方法
+// 方法一: 构造icmp数据探测
+// 方法二: 构造本地命令执行进行ping探测
 
 package common
 
