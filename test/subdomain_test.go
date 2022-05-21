@@ -6,9 +6,8 @@ import (
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-	res := asset_host.ScanSubDomain("baidu.com")
+func TestFofa(m *testing.M) {
+	got := asset_host.ScanSubDomain("baidu.com")
 	fmt.Println()
-	fmt.Printf("res: %v\n", res)
-	return
+	fmt.Printf("got: %v\n", got)
 }
