@@ -10,6 +10,7 @@ import (
 	"log"
 	"net"
 	"poodle/pkg/logger"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -191,8 +192,8 @@ func _TCPOrUDPPortScan_NMAP(target string, scanProto string, ports ...string) sy
 		}
 
 		for _, port := range host.Ports {
-			portRes := []string{port.Protocol, port.State.String(), port.Service.Name}
-			resMap.Store(int(port.ID), portRes)
+			//portRes := []string{port.Protocol, port.State.String(), port.Service.Name}
+			resMap.Store(strconv.Itoa(int(port.ID)), port.Service.Name)
 			//fmt.Printf("\tPort %d/%s %s %s\n", port.ID, port.Protocol, port.State, port.Service.Name)
 		}
 	}

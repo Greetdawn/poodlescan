@@ -88,8 +88,9 @@ func (this *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
 
 // 嗅探域名的子域信息
 func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
-	for _, v := range ScanSubDomain(domain) {
-		domains = append(domains, common.Domain{Name: v})
-	}
-	return
+	// domains = append(domains, common.Domain{Name: ScanSubDomain()[]})
+	// for _, v := range ScanSubDomain() {
+	// 	// domains = append(domains, common.Domain{Name: ScanSubDomain()[]})
+	// }
+	return nil
 }
