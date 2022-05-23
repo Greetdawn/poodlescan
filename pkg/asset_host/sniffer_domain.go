@@ -21,31 +21,31 @@ type domainSniffer struct {
 func (this *domainSniffer) StartSniff() {
 	logger.LogInfo("start sniff domain...", logger.LOG_TERMINAL_FILE)
 	for i := 0; i < len(this.super.TargetDomains); i++ {
-		// 创建一个资产
-		var alivedAsset AssetHost
-		// 1. 设置不是IP
-		alivedAsset.IsIP = false
-		// 2. 复制域名信息。如果不进行真实IP的探测，这里将是资产的主键
-		alivedAsset.Domain = this.super.TargetDomains[i]
-		// 3. 嗅探主域备案信息
+		// // 创建一个资产
+		// var alivedAsset AssetHost
+		// // 1. 设置不是IP
+		// alivedAsset.IsIP = false
+		// // 2. 复制域名信息。如果不进行真实IP的探测，这里将是资产的主键
+		// alivedAsset.Domain = this.super.TargetDomains[i]
+		// // 3. 嗅探主域备案信息
 
-		// 4. 嗅探域名子域信息
-		subDomains := this.super.TargetDomains[i].SniffSubDomain()
-		diedAsset := alivedAsset
-		for _, v := range subDomains {
-			if v.IsAlived {
-				alivedAsset.SubDomains = append(alivedAsset.SubDomains, v)
-			} else {
-				diedAsset.SubDomains = append(diedAsset.SubDomains, v)
-			}
-		}
+		// // 4. 嗅探域名子域信息
+		// subDomains := this.super.TargetDomains[i].SniffSubDomain()
+		// diedAsset := alivedAsset
+		// for _, v := range subDomains {
+		// 	if v.IsAlived {
+		// 		alivedAsset.SubDomains = append(alivedAsset.SubDomains, v)
+		// 	} else {
+		// 		diedAsset.SubDomains = append(diedAsset.SubDomains, v)
+		// 	}
+		// }
 
-		// 保存存活资产列表
-		this.super.AppendAlivedAssetHost(alivedAsset)
-		// 保存不存活资产列表
-		if len(diedAsset.SubDomains) > 0 {
-			this.super.AppendDiedAssetHost(diedAsset)
-		}
+		// // 保存存活资产列表
+		// this.super.AppendAlivedAssetHost(alivedAsset)
+		// // 保存不存活资产列表
+		// if len(diedAsset.SubDomains) > 0 {
+		// 	this.super.AppendDiedAssetHost(diedAsset)
+		// }
 	}
 }
 

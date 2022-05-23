@@ -1,12 +1,9 @@
 package asset_host
 
 import (
-	"fmt"
 	"poodle/pkg/common"
 	"poodle/pkg/logger"
 	"sync"
-
-	"github.com/liushuochen/gotable"
 )
 
 // 嗅探器单例
@@ -79,54 +76,6 @@ func (this *Sniffer) StartDomainSniff() {
 	this.domainSniffer.StartSniff()
 }
 
-// 打印所有的资产信息
-func (this *Sniffer) PrintAssetHostList() {
-	common.InitSqlite("123456789.db")
-
-	for _, asset := range this.AlivedAssetHosts {
-		var first bool = true
-		tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
-
-		if len(asset.OpenedPorts) == 0 {
-			tab.AddRow([]string{asset.RealIP, "存活", "", ""})
-		} else {
-			for key, value := range asset.OpenedPorts {
-				if first {
-					tab.AddRow([]string{asset.RealIP, "存活", key, value})
-					first = false
-				} else {
-					tab.AddRow([]string{" ", " ", key, value})
-				}
-				common.AppendAsset2Sql(asset.RealIP, "tcp", key, value)
-			}
-		}
-		fmt.Println(tab)
-	}
-
-	common.CloseDB()
-
-	//******** 处理不存活情况  *****************
-	// for _, asset := range this.DiedAssetHosts {
-	// 	var first bool = true
-	// 	tab, _ := gotable.Create("主机IP", "存活性", "开放端口", "服务信息")
-
-	// 	if len(asset.OpenedPorts) == 0 {
-	// 		tab.AddRow([]string{asset.RealIP, "不存活", "", ""})
-	// 	} else {
-	// 		for key, value := range asset.OpenedPorts {
-	// 			if first {
-	// 				tab.AddRow([]string{asset.RealIP, "不存活", key, value})
-	// 				first = false
-	// 			} else {
-	// 				tab.AddRow([]string{" ", " ", key, value})
-	// 			}
-	// 		}
-	// 	}
-	// 	fmt.Println(tab)
-	// }
-	//******** 处理不存活情况  end *****************
-}
-
 // 嗅探目标主机是否存活
 func (this *Sniffer) IsHostAlived(target string) bool {
 	return common.IsHostAlived(target)
@@ -138,6 +87,9 @@ func (this *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
 }
 
 // 嗅探域名的子域信息
-func (this *Sniffer) SniffSubDomain(domain string) []string {
-	return ScanSubDomain(domain)
+func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
+	for _, v := range ScanSubDomain(domain) {
+		domains = append(domains, common.Domain{Name: v})
+	}
+	return
 }

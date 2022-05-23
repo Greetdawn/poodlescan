@@ -53,5 +53,5 @@ func main() {
 	}()
 
 	mainWaitGroup.Wait()
-	asset_host.GetSnifferObj().PrintAssetHostList()
+	cmdparser.PrintAssetHostList(asset_host.GetSnifferObj().AlivedAssetHosts)
 }

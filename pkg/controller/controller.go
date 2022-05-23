@@ -282,6 +282,8 @@ func run(task *common.TASKUint) {
 	if task.ControlCode&common.CC_PING_SCAN == common.CC_PING_SCAN {
 		alived = sniffer.IsHostAlived(task.Target)
 	}
+
+	assetHost.IsAlived = alived
 	// 如果资产不存活，其他功能都不用执行
 	if !alived {
 		mutexOfAppendAsset.Lock()
@@ -313,7 +315,8 @@ func run(task *common.TASKUint) {
 	// 子域扫描功能
 	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
 		// 执行子域扫描功能
-		logger.LogInfo("执行子域扫描", logger.LOG_TERMINAL)
+		assetHost.SubDomains = append(assetHost.SubDomains, sniffer.SniffSubDomain(task.Target)...)
+		// logger.LogInfo("执行子域扫描", logger.LOG_TERMINAL)
 	}
 
 	// 爬虫

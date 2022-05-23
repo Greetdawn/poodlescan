@@ -76,3 +76,15 @@ func (this *AssetHost) AppendOpenedPortMap(portMap sync.Map) {
 		return true
 	})
 }
+
+func SyncMap2Map(sm sync.Map) (m map[string]string) {
+	sm.Range(func(key, value interface{}) bool {
+		k := key.(string)
+		v := value.(string)
+		mutexOfAppendOpenedPorts.Lock()
+		m[k] = v
+		mutexOfAppendOpenedPorts.Unlock()
+		return true
+	})
+	return
+}

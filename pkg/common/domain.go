@@ -9,6 +9,9 @@ type Domain struct {
 
 	// 本域名是否存活
 	IsAlived bool
+
+	// 域名开放端口
+	OpenPorts map[string]string
 }
 
 // 域名端口探测实现的地方
