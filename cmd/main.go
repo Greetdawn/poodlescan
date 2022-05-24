@@ -14,6 +14,7 @@ import (
 var mainWaitGroup sync.WaitGroup
 
 func main() {
+	// 创建服务器
 
 	// 1. 解析用户输入的命令行
 	var err error
