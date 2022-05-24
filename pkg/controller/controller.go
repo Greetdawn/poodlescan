@@ -3,6 +3,7 @@ package controllor
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"log"
 	"net"
 	"poodle/pkg/asset_host"
@@ -261,6 +262,8 @@ func getPorts(str string) (ports []string, err error) {
 
 // 执行功能
 func run(task *common.TASKUint) {
+	logger.LogInfo("runing", logger.LOG_TERMINAL)
+	fmt.Printf("task: %v\n", task)
 	var runSync sync.WaitGroup
 	// 嗅探器对象
 	sniffer := asset_host.GetSnifferObj()

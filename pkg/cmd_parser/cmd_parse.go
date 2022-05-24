@@ -44,6 +44,7 @@ func GenrateTasks(tp *TerminalParams, cc uint) error {
 		} else {
 			newTask.TargetType = common.TASKUint_TargetType_Domain
 		}
+		logger.LogInfo("add a task", logger.LOG_TERMINAL)
 		common.G_TaskChannal <- newTask
 	}
 	close(common.G_TaskChannal)
