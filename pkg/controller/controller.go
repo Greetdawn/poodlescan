@@ -23,8 +23,8 @@ var mutexOfAppendOpenedPorts sync.Mutex
 //(alivedList asset_host.AssetHost, diedList asset_host.AssetHost, err error)
 func Run(threadNum int) {
 	var tmps sync.WaitGroup
-	tmps.Add(threadNum)
-	for i := 0; i < threadNum; i++ {
+	tmps.Add(100)
+	for i := 0; i < 100; i++ {
 		go func() {
 			defer tmps.Done()
 			var end = true
@@ -32,7 +32,7 @@ func Run(threadNum int) {
 				select {
 				case target, ok := <-common.G_TaskChannal:
 					if !ok {
-						//logger.LogWarn("TaskChannal 通道已关闭", logger.LOG_TERMINAL)
+						// logger.LogWarn("TaskChannal 通道已关闭", logger.LOG_TERMINAL)
 						end = false
 					} else {
 						run(target)
@@ -262,8 +262,7 @@ func getPorts(str string) (ports []string, err error) {
 
 // 执行功能
 func run(task *common.TASKUint) {
-	logger.LogInfo("runing", logger.LOG_TERMINAL)
-	fmt.Printf("task: %v\n", task)
+	task.ControlCode = 3
 	var runSync sync.WaitGroup
 	// 嗅探器对象
 	sniffer := asset_host.GetSnifferObj()
@@ -295,6 +294,7 @@ func run(task *common.TASKUint) {
 		return
 	}
 
+	fmt.Printf("task.ControlCode&common: %d\n", task.ControlCode)
 	// 端口扫描功能
 	if task.ControlCode&common.CC_PORT_SCAN == common.CC_PORT_SCAN {
 		// 分析端口列表
@@ -317,6 +317,7 @@ func run(task *common.TASKUint) {
 
 	// 子域扫描功能
 	if task.ControlCode&common.CC_SUB_DOMAIN_SCAN == common.CC_SUB_DOMAIN_SCAN {
+		logger.LogInfo("执行子域扫描功能", logger.LOG_TERMINAL)
 		// 执行子域扫描功能
 		assetHost.SubDomains = append(assetHost.SubDomains, sniffer.SniffSubDomain(task.Target)...)
 		// logger.LogInfo("执行子域扫描", logger.LOG_TERMINAL)

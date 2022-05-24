@@ -65,7 +65,7 @@ var (
 
 	// 选择用那种方法来扫描端口
 	// 默认下用泰迪自身的方法扫描
-	Scan_Port_Method ScanPortMethod = SPM_NMAP
+	Scan_Port_Method ScanPortMethod = SPM_POODLE
 )
 
 func ScanHostOpenedPorts(target string) (portMap sync.Map) {

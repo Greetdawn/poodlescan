@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"poodle/pkg/pb"
 	"runtime"
 	"strconv"
 	"strings"
@@ -11,6 +12,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+var SRV *pb.Kernel_SendControlPkgServer
 
 const (
 	LOG_TERMINAL LOG_OUTPUT_MODE = iota
@@ -99,6 +102,12 @@ func getLogWriter() zapcore.WriteSyncer {
 
 // 记录INFO日志
 func LogInfo(log string, mode LOG_OUTPUT_MODE) {
+	if SRV != nil {
+		_ = (*SRV).Send(&pb.HelloReply{
+			Asset: log,
+		})
+	}
+
 	if mode == LOG_FILE {
 		SugarLogger.Info(log)
 	} else if mode == LOG_TERMINAL {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
+	"poodle/pkg/logger"
+	"strconv"
 
 	"github.com/liushuochen/gotable"
 	"github.com/liushuochen/gotable/table"
@@ -13,6 +15,8 @@ var isFirst bool = true
 
 // 打印所有的资产信息
 func PrintAssetHostList(assets []asset_host.AssetHost) {
+	logger.LogInfo("asset_host.AssetHost len:", logger.LOG_TERMINAL)
+	fmt.Println(strconv.Itoa(len(assets)))
 	for _, asset := range assets {
 		tab, _ := gotable.Create("目标", "子域名", "存活状态", "开放端口", "服务信息", "爬虫结果")
 
