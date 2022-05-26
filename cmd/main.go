@@ -154,12 +154,11 @@ func prit() {
 		}
 
 		var subDomain [][]string
-		for i, v := range v.SubDomains {
-			subDomain[i][0] = v.Name
+		for _, v := range v.SubDomains {
 			if v.IsAlived {
-				subDomain[i][1] = "存活"
+				subDomain = append(subDomain, []string{v.Name, "存活"})
 			} else {
-				subDomain[i][1] = "不存活"
+				subDomain = append(subDomain, []string{v.Name, "不存活"})
 			}
 		}
 		//
