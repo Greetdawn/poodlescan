@@ -2,7 +2,7 @@ package logger
 
 import (
 	"fmt"
-	"poodle/pkg/pb"
+	pb "poodle/pkg/mygrpc"
 	"runtime"
 	"strconv"
 	"strings"
@@ -13,7 +13,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var SRV *pb.Kernel_SendControlPkgServer
+var SRV *pb.Kernel_SendOrderServer
+
+// 是否打印内核日志
+var IsPrintLogInfo bool = true
 
 const (
 	LOG_TERMINAL LOG_OUTPUT_MODE = iota
@@ -59,7 +62,7 @@ func FullCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEnc
 
 // 自定义显示调用者
 func NoCallerEncoder(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
-	enc.AppendString(" caonima")
+	enc.AppendString(" ")
 	enc = nil
 }
 
@@ -103,9 +106,12 @@ func getLogWriter() zapcore.WriteSyncer {
 // 记录INFO日志
 func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 	if SRV != nil {
-		_ = (*SRV).Send(&pb.HelloReply{
-			Asset: log,
+		_ = (*SRV).Send(&pb.SendOrderReply{
+			Info: log,
 		})
+	}
+	if !IsPrintLogInfo {
+		return
 	}
 
 	if mode == LOG_FILE {
@@ -120,6 +126,15 @@ func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 
 // 记录Warn日志
 func LogWarn(log string, mode LOG_OUTPUT_MODE) {
+	if SRV != nil {
+		_ = (*SRV).Send(&pb.SendOrderReply{
+			Info: log,
+		})
+	}
+
+	if !IsPrintLogInfo {
+		return
+	}
 	if mode == LOG_FILE {
 		SugarLogger.Warn(log)
 	} else if mode == LOG_TERMINAL {
@@ -132,6 +147,14 @@ func LogWarn(log string, mode LOG_OUTPUT_MODE) {
 
 // 记录Error日志
 func LogError(log string, mode LOG_OUTPUT_MODE) {
+	if SRV != nil {
+		_ = (*SRV).Send(&pb.SendOrderReply{
+			Info: log,
+		})
+	}
+	if !IsPrintLogInfo {
+		return
+	}
 	if mode == LOG_FILE {
 		SugarLogger.Error(log)
 	} else if mode == LOG_TERMINAL {
@@ -143,6 +166,9 @@ func LogError(log string, mode LOG_OUTPUT_MODE) {
 }
 
 func LogNoFormat(log string, mode LOG_OUTPUT_MODE) {
+	if !IsPrintLogInfo {
+		return
+	}
 	if mode == LOG_FILE {
 		SugarLogger.Info(log)
 	} else if mode == LOG_TERMINAL {
@@ -162,6 +188,6 @@ func getShortCallerInfo() string {
 
 func logTeriminal(level, log string) {
 	// 不显示调用者
-	fmt.Printf(fmt.Sprintf("[%s] %s %s\n", FgGreen(time.Now().Format("2006-01-02 15:04:05")), level, log))
+	fmt.Printf("[%s] %s %s\n", FgGreen(time.Now().Format("2006-01-02 15:04:05")), level, log)
 	// fmt.Printf(fmt.Sprintf("[%s] %s %s %s\n", FgGreen(time.Now().Format("2006-01-02 15:04:05")), level, getShortCallerInfo(), log))
 }

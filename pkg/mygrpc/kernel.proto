@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "../mygrpc";
+
+package mygrpc;
+
+service Kernel {
+  rpc SendOrder(SendOrderRequest)  returns (stream SendOrderReply) {}
+}
+// 发送控制码的包
+message SendOrderRequest {
+  string TerminalParamJson = 1;
+}
+
+message SendOrderReply {
+  uint32 CurrentPkgID = 1;
+  uint32 TotalPkgNumber = 2;
+  uint32 Type =3;
+  string Info = 4;
+}
+

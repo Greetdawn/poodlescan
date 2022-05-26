@@ -7,15 +7,18 @@ const (
 	TASKUint_TargetType_Domain TASKUint_TargetType = 2
 )
 
-// 全局变量，任务通道
-var G_TaskChannal chan *TASKUint
+//************ 全局变量定义区 ************
+// 任务通道
+// var G_TaskChannal chan *TASKUint
 
-type TASKUint struct {
-	Target      string              // 用户输入的扫描目标
-	TargetType  TASKUint_TargetType // 目标表示类型，IP或者域名
-	ControlCode uint                // 控制码
-	Params      map[string]string   // 用到的参数
-}
+//**************************************
+
+// type TASKUint struct {
+// 	Target      string              // 用户输入的扫描目标
+// 	TargetType  TASKUint_TargetType // 目标表示类型，IP或者域名
+// 	ControlCode uint                // 控制码
+// 	Params      map[string]string   // 用到的参数
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////
 // 定义常见的域名后缀
@@ -61,3 +64,46 @@ const (
 	//16:漏洞利用功能
 	CC_VULEXPLOIT uint = 65536
 )
+
+type TaskPacket struct {
+	// 指定全流程扫描
+	Full bool
+	// 用户输入的扫描目标，原始字符串
+	UserInputTargetString string
+	// 标志;一些特殊的标志
+	// 000000000 默认情况，保留
+	// 000000001 目标从文件中读取
+	Flag byte
+	// 用户设置的线程数
+	ThreadsNumber int // 总线程数，同时扫描几个目标
+	// Pn "跳过Ping扫"，默认不跳过Ping扫,false
+	IsPn bool
+	// 定义是否进行完整嗅探扫描
+	Sniffer bool
+	// 定义是否进行端口扫描
+	PortScan bool
+	// 定义端口扫描的范围
+	PortList string
+	// 定义是否进行子域探测
+	SubDomain bool
+	// 指定是否进行网站爬虫
+	Spider bool
+	// 指定是否进行指纹识别
+	Fingerprint bool
+	// 指定全漏洞扫描
+	Vulscan bool
+	// 指定具体漏洞名称或者编号扫描
+	Vulscanid string
+	// 指定具体漏洞类型扫描
+	VulscanType string
+	// 指定用户自定义脚本扫描
+	VulscanDefined string
+	// 指定功能目录探测
+	VulscanDirsearch bool
+	// 指定服务端口爆破
+	VulscanBurst bool
+	// 指定具体漏洞利用脚本
+	Vulexploit string
+	// 命令执行需要的参数
+	Command string
+}

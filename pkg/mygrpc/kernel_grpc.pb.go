@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: control.proto
+// source: kernel.proto
 
-package pb
+package mygrpc
 
 import (
 	context "context"
@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type KernelClient interface {
-	SendControlPkg(ctx context.Context, in *ControlRequest, opts ...grpc.CallOption) (Kernel_SendControlPkgClient, error)
+	SendOrder(ctx context.Context, in *SendOrderRequest, opts ...grpc.CallOption) (Kernel_SendOrderClient, error)
 }
 
 type kernelClient struct {
@@ -33,12 +33,12 @@ func NewKernelClient(cc grpc.ClientConnInterface) KernelClient {
 	return &kernelClient{cc}
 }
 
-func (c *kernelClient) SendControlPkg(ctx context.Context, in *ControlRequest, opts ...grpc.CallOption) (Kernel_SendControlPkgClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Kernel_ServiceDesc.Streams[0], "/pb.Kernel/SendControlPkg", opts...)
+func (c *kernelClient) SendOrder(ctx context.Context, in *SendOrderRequest, opts ...grpc.CallOption) (Kernel_SendOrderClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Kernel_ServiceDesc.Streams[0], "/mygrpc.Kernel/SendOrder", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &kernelSendControlPkgClient{stream}
+	x := &kernelSendOrderClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -48,17 +48,17 @@ func (c *kernelClient) SendControlPkg(ctx context.Context, in *ControlRequest, o
 	return x, nil
 }
 
-type Kernel_SendControlPkgClient interface {
-	Recv() (*HelloReply, error)
+type Kernel_SendOrderClient interface {
+	Recv() (*SendOrderReply, error)
 	grpc.ClientStream
 }
 
-type kernelSendControlPkgClient struct {
+type kernelSendOrderClient struct {
 	grpc.ClientStream
 }
 
-func (x *kernelSendControlPkgClient) Recv() (*HelloReply, error) {
-	m := new(HelloReply)
+func (x *kernelSendOrderClient) Recv() (*SendOrderReply, error) {
+	m := new(SendOrderReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (x *kernelSendControlPkgClient) Recv() (*HelloReply, error) {
 // All implementations must embed UnimplementedKernelServer
 // for forward compatibility
 type KernelServer interface {
-	SendControlPkg(*ControlRequest, Kernel_SendControlPkgServer) error
+	SendOrder(*SendOrderRequest, Kernel_SendOrderServer) error
 	mustEmbedUnimplementedKernelServer()
 }
 
@@ -77,8 +77,8 @@ type KernelServer interface {
 type UnimplementedKernelServer struct {
 }
 
-func (UnimplementedKernelServer) SendControlPkg(*ControlRequest, Kernel_SendControlPkgServer) error {
-	return status.Errorf(codes.Unimplemented, "method SendControlPkg not implemented")
+func (UnimplementedKernelServer) SendOrder(*SendOrderRequest, Kernel_SendOrderServer) error {
+	return status.Errorf(codes.Unimplemented, "method SendOrder not implemented")
 }
 func (UnimplementedKernelServer) mustEmbedUnimplementedKernelServer() {}
 
@@ -93,24 +93,24 @@ func RegisterKernelServer(s grpc.ServiceRegistrar, srv KernelServer) {
 	s.RegisterService(&Kernel_ServiceDesc, srv)
 }
 
-func _Kernel_SendControlPkg_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ControlRequest)
+func _Kernel_SendOrder_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SendOrderRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(KernelServer).SendControlPkg(m, &kernelSendControlPkgServer{stream})
+	return srv.(KernelServer).SendOrder(m, &kernelSendOrderServer{stream})
 }
 
-type Kernel_SendControlPkgServer interface {
-	Send(*HelloReply) error
+type Kernel_SendOrderServer interface {
+	Send(*SendOrderReply) error
 	grpc.ServerStream
 }
 
-type kernelSendControlPkgServer struct {
+type kernelSendOrderServer struct {
 	grpc.ServerStream
 }
 
-func (x *kernelSendControlPkgServer) Send(m *HelloReply) error {
+func (x *kernelSendOrderServer) Send(m *SendOrderReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -118,15 +118,15 @@ func (x *kernelSendControlPkgServer) Send(m *HelloReply) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Kernel_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Kernel",
+	ServiceName: "mygrpc.Kernel",
 	HandlerType: (*KernelServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "SendControlPkg",
-			Handler:       _Kernel_SendControlPkg_Handler,
+			StreamName:    "SendOrder",
+			Handler:       _Kernel_SendOrder_Handler,
 			ServerStreams: true,
 		},
 	},
-	Metadata: "control.proto",
+	Metadata: "kernel.proto",
 }
