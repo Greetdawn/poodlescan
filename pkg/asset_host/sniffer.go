@@ -70,5 +70,5 @@ func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
 	for _, v := range ScanSubDomain(domain) {
 		domains = append(domains, common.Domain{Name: v})
 	}
-	return nil
+	return
 }

@@ -113,6 +113,7 @@ func doSniffer(task *TASKUint, tp common.TaskPacket, sniffer *asset_host.Sniffer
 
 	// 2. 子域探测
 	if tp.SubDomain {
+		logger.LogInfo("执行子域探测功能", logger.LOG_TERMINAL)
 		asset.SubDomains = append(asset.SubDomains, sniffer.SniffSubDomain(task.Target)...)
 	}
 

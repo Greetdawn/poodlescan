@@ -10,6 +10,7 @@ import (
 	controllor "poodle/pkg/controller"
 	"poodle/pkg/logger"
 	pb "poodle/pkg/mygrpc"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -95,6 +96,7 @@ func initSetKernel() {
 	common.ShowBanner()
 	fmt.Println()
 	fmt.Print("正在启动内核，请稍后")
+	sort.Strings(common.DOMAINARRAY)
 	for i := 0; i < 10; i++ {
 		fmt.Print(".")
 		time.Sleep(time.Duration(200) * time.Millisecond)
