@@ -2,7 +2,6 @@ package asset_host
 
 import (
 	"poodle/pkg/common"
-	"poodle/pkg/logger"
 	"sync"
 )
 
@@ -31,12 +30,6 @@ type Sniffer struct {
 	// 需要嗅探的域名列表
 	TargetDomains []common.Domain
 
-	// 域名扫描器
-	domainSniffer
-
-	// ip扫描器
-	ipSniffer
-
 	// 嗅探的资产结果
 	AlivedAssetHosts []AssetHost
 
@@ -60,20 +53,6 @@ func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
 // 追加不存活资产信息
 func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
 	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
-}
-
-// 实现iSniffer的接口:StartSniff
-func (this *Sniffer) StartIPSniff() {
-	logger.LogInfo("start single ip sniff...", logger.LOG_TERMINAL_FILE)
-	this.ipSniffer.super = this
-	this.ipSniffer.StartSniff()
-}
-
-// StartDomainSniff: 域名嗅探器
-func (this *Sniffer) StartDomainSniff() {
-	logger.LogInfo("start single domain sniff...", logger.LOG_TERMINAL_FILE)
-	this.domainSniffer.super = this
-	this.domainSniffer.StartSniff()
 }
 
 // 嗅探目标主机是否存活
