@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
+	"poodle/pkg/config"
 	"poodle/pkg/logger"
 	"sync"
 )
@@ -15,8 +16,8 @@ var mutexOfAppendOpenedPorts sync.Mutex
 //(alivedList asset_host.AssetHost, diedList asset_host.AssetHost, err error)
 func Run(tp common.TaskPacket) {
 	var tmps sync.WaitGroup
-	tmps.Add(common.G_RunTaskThreads)
-	for i := 0; i < common.G_RunTaskThreads; i++ {
+	tmps.Add(config.KnelConfig.RunTaskThreads)
+	for i := 0; i < config.KnelConfig.RunTaskThreads; i++ {
 		go func() {
 			defer tmps.Done()
 			var end = true

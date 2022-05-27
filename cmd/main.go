@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"poodle/pkg/common"
+	"poodle/pkg/config"
 	"poodle/pkg/logger"
 	"poodle/pkg/mygrpc"
 
@@ -15,11 +16,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-var Sss int
-
 func main() {
-	initSetKernel()
-	var err error
+	// 初始化内核
+	initKernel()
+
 	// 创建监听器
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 50088))
 	if err != nil {
@@ -38,12 +38,16 @@ func main() {
 	}
 }
 
-func initSetKernel() {
+func initKernel() {
 	// 输出banner信息
 	common.ShowBanner()
 	fmt.Println()
 	fmt.Print("正在启动内核，请稍后")
+	// 字符串数组排序
 	sort.Strings(common.DOMAINARRAY)
+	// 创建配置对象
+	config.KnelConfig = config.NewDefaultKernelConfig()
+
 	for i := 0; i < 10; i++ {
 		fmt.Print(".")
 		time.Sleep(time.Duration(50) * time.Millisecond)
@@ -57,11 +61,12 @@ func initSetKernel() {
 	if id == 2 {
 		fmt.Println("自定义内核配置项：[1/2]")
 		fmt.Print("运行线程数： ")
-		fmt.Scanf("%d", &common.G_RunTaskThreads)
+		fmt.Scanf("%d", &config.KnelConfig.RunTaskThreads)
 		fmt.Println("自定义内核配置项：[2/2]")
 		fmt.Print("是否开启内核日志?(yes/no)：  ")
-		logger.IsPrintLogInfo = scanYesOrNo()
+		config.KnelConfig.IsPrintLogInfo = scanYesOrNo()
 	}
+
 	fmt.Print("正在完成配置，请稍后")
 	for i := 0; i < 5; i++ {
 		fmt.Print(".")

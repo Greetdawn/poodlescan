@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"poodle/pkg/config"
 	"runtime"
 	"strconv"
 	"strings"
@@ -105,10 +106,10 @@ func getLogWriter() zapcore.WriteSyncer {
 // 记录INFO日志
 func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 	if GPtr_LogModuleInfoChannal != nil {
-		(*GPtr_LogModuleInfoChannal) <- log
+		(*GPtr_LogModuleInfoChannal) <- fmt.Sprintf("["+FgGreen("INFO")+"]", log)
 	}
 
-	if !IsPrintLogInfo {
+	if !config.KnelConfig.IsPrintLogInfo {
 		return
 	}
 
@@ -125,7 +126,7 @@ func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 // 记录Warn日志
 func LogWarn(log string, mode LOG_OUTPUT_MODE) {
 	if GPtr_LogModuleInfoChannal != nil {
-		(*GPtr_LogModuleInfoChannal) <- log
+		(*GPtr_LogModuleInfoChannal) <- fmt.Sprintf("["+FgYellow("WARN")+"]", log)
 	}
 	if !IsPrintLogInfo {
 		return
@@ -142,6 +143,9 @@ func LogWarn(log string, mode LOG_OUTPUT_MODE) {
 
 // 记录Error日志
 func LogError(log string, mode LOG_OUTPUT_MODE) {
+	if GPtr_LogModuleInfoChannal != nil {
+		(*GPtr_LogModuleInfoChannal) <- fmt.Sprintf("["+BgRedFgWhite("ERROR")+"]", log)
+	}
 	if !IsPrintLogInfo {
 		return
 	}
@@ -156,6 +160,9 @@ func LogError(log string, mode LOG_OUTPUT_MODE) {
 }
 
 func LogNoFormat(log string, mode LOG_OUTPUT_MODE) {
+	if GPtr_LogModuleInfoChannal != nil {
+		(*GPtr_LogModuleInfoChannal) <- log
+	}
 	if !IsPrintLogInfo {
 		return
 	}
