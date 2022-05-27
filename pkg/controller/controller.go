@@ -77,6 +77,10 @@ func run(task *TASKUint, tp common.TaskPacket) {
 		}
 	}
 
+	// 扫描漏洞模块
+	if tp.Vulscan {
+
+	}
 	// 多线程同步写入资产信息
 	mutexOfAppendAsset.Lock()
 	asset_host.GetSnifferObj().AppendAlivedAssetHost(assetHost)
