@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-option go_package = "../mygrpc";
+option go_package = "../main";
 
-package mygrpc;
+package main;
 
 service Kernel {
   rpc SendOrder(SendOrderRequest)  returns (stream SendOrderReply) {}
-  rpc PleaseOpenLog() returns (stream LogInfoReply){}
+  rpc PleaseOpenLog(Please) returns (stream LogInfoReply){}
 }
 // 发送控制码的包
 message SendOrderRequest {
@@ -18,6 +18,10 @@ message SendOrderReply {
   uint32 TotalPkgNumber = 2;
   uint32 Type =3;
   string Info = 4;
+}
+
+message Please{
+ bool IsOK = 1;
 }
 
 // 回复的日志信息
