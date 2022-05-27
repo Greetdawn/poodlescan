@@ -1,25 +1,19 @@
 package logger
 
-import (
-	"fmt"
-
-	"github.com/liushuochen/gotable"
-)
-
 // 打印所有的资产信息
-func PrintAssetHostList(target, isAlived string, subDomain [][]string, ports *map[string]string) {
+// func PrintAssetHostList(target, isAlived string, subDomain [][]string, ports *map[string]string) {
 
-	tab, _ := gotable.Create("目标", "子域名", "存活状态", "开放端口", "服务信息", "爬虫结果")
-	tab.AddRow([]string{target, "", isAlived, "", "", ""})
+// 	tab, _ := gotable.Create("目标", "子域名", "存活状态", "开放端口", "服务信息", "爬虫结果")
+// 	tab.AddRow([]string{target, "", isAlived, "", "", ""})
 
-	for _, v := range subDomain {
-		tab.AddRow([]string{"", v[0], v[1], "", "", ""})
-	}
-	for k, v := range *ports {
-		tab.AddRow([]string{"", "", "", k, v, ""})
-	}
-	fmt.Println(tab)
-}
+// 	for _, v := range subDomain {
+// 		tab.AddRow([]string{"", v[0], v[1], "", "", ""})
+// 	}
+// 	for k, v := range *ports {
+// 		tab.AddRow([]string{"", "", "", k, v, ""})
+// 	}
+// 	fmt.Println(tab)
+// }
 
 // common.CloseDB()
 

@@ -15,6 +15,8 @@ import (
 // 是否打印内核日志
 var IsPrintLogInfo bool = true
 
+var GPtr_LogModuleInfoChannal *chan string
+
 const (
 	LOG_TERMINAL LOG_OUTPUT_MODE = iota
 	LOG_FILE
@@ -102,6 +104,9 @@ func getLogWriter() zapcore.WriteSyncer {
 
 // 记录INFO日志
 func LogInfo(log string, mode LOG_OUTPUT_MODE) {
+	if GPtr_LogModuleInfoChannal != nil {
+		(*GPtr_LogModuleInfoChannal) <- log
+	}
 
 	if !IsPrintLogInfo {
 		return
@@ -119,6 +124,9 @@ func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 
 // 记录Warn日志
 func LogWarn(log string, mode LOG_OUTPUT_MODE) {
+	if GPtr_LogModuleInfoChannal != nil {
+		(*GPtr_LogModuleInfoChannal) <- log
+	}
 	if !IsPrintLogInfo {
 		return
 	}

@@ -1,4 +1,4 @@
-package main
+package mygrpc
 
 import (
 	"encoding/json"
@@ -7,12 +7,11 @@ import (
 	"poodle/pkg/common"
 	"poodle/pkg/controller"
 	"poodle/pkg/logger"
-
-	"github.com/liushuochen/gotable"
 )
 
-var G_ServerLogChannal chan string
 var cp_srv *Kernel_SendOrderServer
+var serverLogChannal chan string
+var GPtr_ServerLogChannal *chan string
 
 type Server struct {
 	UnimplementedKernelServer
@@ -20,13 +19,15 @@ type Server struct {
 
 func (s *Server) SendOrder(req *SendOrderRequest, srv Kernel_SendOrderServer) error {
 	cp_srv = &srv
-	common.G_LogInfoChannal = make(chan string, 1000)
+	serverLogChannal = make(chan string, 1000)
+	GPtr_ServerLogChannal = &serverLogChannal
+	logger.GPtr_LogModuleInfoChannal = GPtr_ServerLogChannal
 	var err error
 	var recvTaskPacket common.TaskPacket
 
 	// 将收到的任务包json转成go结构体
 	if e := json.Unmarshal([]byte(req.TerminalParamJson), &recvTaskPacket); e != nil {
-		logger.LogError("接收到的数据转成json发生错误。", logger.LOG_TERMINAL)
+		//logger.LogError("接收到的数据转成json发生错误。", logger.LOG_TERMINAL)
 	}
 
 	// 多线程处理，开启2个子线程同时运行。
@@ -47,20 +48,23 @@ func (s *Server) SendOrder(req *SendOrderRequest, srv Kernel_SendOrderServer) er
 	logger.LogInfo("开始执行主机任务。", logger.LOG_TERMINAL)
 	controller.Run(recvTaskPacket)
 
-	sendAssetInfo()
-	for IsOpenLogInfoChannal {
-		select {
-		case logstring, ok := <-common.G_LogInfoChannal:
-			if !ok {
-				// logger.LogWarn("TaskChannal 通道已关闭", logger.LOG_TERMINAL)
-				IsOpenLogInfoChannal = false
-			} else {
-				OrderServer2Client(logstring)
+	go func() {
+		var end = true
+		for end {
+			select {
+			case log, ok := <-serverLogChannal:
+				if !ok {
+					// logger.LogWarn("TaskChannal 通道已关闭", logger.LOG_TERMINAL)
+					end = false
+				} else {
+					OrderServer2Client(log)
+				}
+			default:
 			}
-		default:
 		}
-	}
+	}()
 
+	sendAssetInfo()
 	return err
 }
 
@@ -75,45 +79,11 @@ func OrderServer2Client(info string) {
 		(*cp_srv).Send(&SendOrderReply{
 			Info: info,
 		})
-		fmt.Println("string")
 	}
 }
 
 func sendAssetInfo() {
-	for _, v := range asset_host.GetSnifferObj().AlivedAssetHosts {
-		var targ string
-		var targAlived string
-		if v.IsIP {
-			targ = v.RealIP
-		} else {
-			targ = v.Domain.Name
-		}
-
-		if v.IsAlived {
-			targAlived = "存活"
-		} else {
-			targAlived = "不存活"
-		}
-
-		var subDomain [][]string
-		for _, v := range v.SubDomains {
-			if v.IsAlived {
-				subDomain = append(subDomain, []string{v.Name, "存活"})
-			} else {
-				subDomain = append(subDomain, []string{v.Name, "不存活"})
-			}
-		}
-
-		tab, _ := gotable.Create("目标", "子域名", "存活状态", "开放端口", "服务信息", "爬虫结果")
-		tab.AddRow([]string{targ, "", targAlived, "", "", ""})
-
-		for _, v := range subDomain {
-			tab.AddRow([]string{"", v[0], v[1], "", "", ""})
-		}
-		for k, v := range v.OpenedPorts {
-			tab.AddRow([]string{"", "", "", k, v, ""})
-		}
-		fmt.Println(tab)
-		OrderServer2Client(tab.String())
+	for _, v := range asset_host.Assets2Strings() {
+		OrderServer2Client(v)
 	}
 }

@@ -130,7 +130,3 @@ func doSniffer(task *TASKUint, tp common.TaskPacket, sniffer *asset_host.Sniffer
 	}
 	return err
 }
-
-// func cancelGenerateTask() {
-// 	isGenerateTask = false
-// }

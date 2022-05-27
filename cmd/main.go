@@ -5,11 +5,9 @@ import (
 	"log"
 	"net"
 	"poodle/pkg/common"
+	"poodle/pkg/logger"
 	"poodle/pkg/mygrpc"
 
-	"poodle/pkg/logger"
-
-	//pb "poodle/pkg/mygrpc"
 	"sort"
 	"strings"
 	"time"
@@ -17,13 +15,13 @@ import (
 	"google.golang.org/grpc"
 )
 
-var lis net.Listener
+var Sss int
 
 func main() {
 	initSetKernel()
 	var err error
 	// 创建监听器
-	lis, err = net.Listen("tcp", fmt.Sprintf(":%d", 50088))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 50088))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

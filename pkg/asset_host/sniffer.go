@@ -3,6 +3,8 @@ package asset_host
 import (
 	"poodle/pkg/common"
 	"sync"
+
+	"github.com/liushuochen/gotable"
 )
 
 // 嗅探器单例
@@ -69,6 +71,45 @@ func (this *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
 func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
 	for _, v := range ScanSubDomain(domain) {
 		domains = append(domains, common.Domain{Name: v})
+	}
+	return
+}
+
+func Assets2Strings() (asstesString []string) {
+	for _, v := range GetSnifferObj().AlivedAssetHosts {
+		var targ string
+		var targAlived string
+		if v.IsIP {
+			targ = v.RealIP
+		} else {
+			targ = v.Domain.Name
+		}
+
+		if v.IsAlived {
+			targAlived = "存活"
+		} else {
+			targAlived = "不存活"
+		}
+
+		var subDomain [][]string
+		for _, v := range v.SubDomains {
+			if v.IsAlived {
+				subDomain = append(subDomain, []string{v.Name, "存活"})
+			} else {
+				subDomain = append(subDomain, []string{v.Name, "不存活"})
+			}
+		}
+
+		tab, _ := gotable.Create("目标", "子域名", "存活状态", "开放端口", "服务信息", "爬虫结果")
+		tab.AddRow([]string{targ, "", targAlived, "", "", ""})
+
+		for _, v := range subDomain {
+			tab.AddRow([]string{"", v[0], v[1], "", "", ""})
+		}
+		for k, v := range v.OpenedPorts {
+			tab.AddRow([]string{"", "", "", k, v, ""})
+		}
+		asstesString = append(asstesString, tab.String())
 	}
 	return
 }
