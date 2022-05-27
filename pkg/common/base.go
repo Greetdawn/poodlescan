@@ -10,6 +10,7 @@ const (
 //************ 全局变量定义区 ************
 // 任务通道
 // var G_TaskChannal chan *TASKUint
+var G_LogInfoChannal chan string
 
 //**************************************
 

@@ -6,6 +6,7 @@ package mygrpc;
 
 service Kernel {
   rpc SendOrder(SendOrderRequest)  returns (stream SendOrderReply) {}
+  rpc PleaseOpenLog() returns (stream LogInfoReply){}
 }
 // 发送控制码的包
 message SendOrderRequest {
@@ -17,5 +18,10 @@ message SendOrderReply {
   uint32 TotalPkgNumber = 2;
   uint32 Type =3;
   string Info = 4;
+}
+
+// 回复的日志信息
+message LogInfoReply{
+  string LogString = 1;
 }
 

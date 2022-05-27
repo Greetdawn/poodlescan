@@ -2,7 +2,6 @@ package logger
 
 import (
 	"fmt"
-	pb "poodle/pkg/mygrpc"
 	"runtime"
 	"strconv"
 	"strings"
@@ -12,8 +11,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
-
-var SRV *pb.Kernel_SendOrderServer
 
 // 是否打印内核日志
 var IsPrintLogInfo bool = true
@@ -105,11 +102,7 @@ func getLogWriter() zapcore.WriteSyncer {
 
 // 记录INFO日志
 func LogInfo(log string, mode LOG_OUTPUT_MODE) {
-	if SRV != nil {
-		_ = (*SRV).Send(&pb.SendOrderReply{
-			Info: log,
-		})
-	}
+
 	if !IsPrintLogInfo {
 		return
 	}
@@ -126,12 +119,6 @@ func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 
 // 记录Warn日志
 func LogWarn(log string, mode LOG_OUTPUT_MODE) {
-	if SRV != nil {
-		_ = (*SRV).Send(&pb.SendOrderReply{
-			Info: log,
-		})
-	}
-
 	if !IsPrintLogInfo {
 		return
 	}
@@ -147,11 +134,6 @@ func LogWarn(log string, mode LOG_OUTPUT_MODE) {
 
 // 记录Error日志
 func LogError(log string, mode LOG_OUTPUT_MODE) {
-	if SRV != nil {
-		_ = (*SRV).Send(&pb.SendOrderReply{
-			Info: log,
-		})
-	}
 	if !IsPrintLogInfo {
 		return
 	}

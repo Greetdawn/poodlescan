@@ -1,4 +1,4 @@
-package controllor
+package controller
 
 type st_Target struct {
 	Target string //目标

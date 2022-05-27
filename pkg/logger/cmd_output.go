@@ -2,7 +2,6 @@ package logger
 
 import (
 	"fmt"
-	pb "poodle/pkg/mygrpc"
 
 	"github.com/liushuochen/gotable"
 )
@@ -18,11 +17,6 @@ func PrintAssetHostList(target, isAlived string, subDomain [][]string, ports *ma
 	}
 	for k, v := range *ports {
 		tab.AddRow([]string{"", "", "", k, v, ""})
-	}
-	if SRV != nil {
-		_ = (*SRV).Send(&pb.SendOrderReply{
-			Info: tab.String(),
-		})
 	}
 	fmt.Println(tab)
 }
