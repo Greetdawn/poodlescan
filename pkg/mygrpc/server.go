@@ -83,7 +83,7 @@ func OrderServer2Client(info string) {
 }
 
 func sendAssetInfo() {
-	for _, v := range asset_host.Assets2Strings() {
+	for _, v := range asset_host.Assets2Strings(true) {
 		OrderServer2Client(v)
 	}
 }

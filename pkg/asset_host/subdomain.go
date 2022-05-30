@@ -32,7 +32,7 @@ const (
 // 定义所需参数
 var (
 	FOFA_EMAIL string = "cannopznjooss@gmail.com"
-	FOFA_KEY   string = "e0a8689fd9ee6f8249a57ad7230a7065"
+	FOFA_KEY   string = "a63e6f1bd58eba5877dbb0420addb6e9"
 	// 子域信息收集保存结果
 	Results []string
 	// 子域收集方法

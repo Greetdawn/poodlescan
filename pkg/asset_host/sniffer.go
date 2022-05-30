@@ -75,7 +75,7 @@ func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
 	return
 }
 
-func Assets2Strings() (asstesString []string) {
+func Assets2Strings(isRemove bool) (asstesString []string) {
 	for _, v := range GetSnifferObj().AlivedAssetHosts {
 		var targ string
 		var targAlived string
@@ -110,6 +110,9 @@ func Assets2Strings() (asstesString []string) {
 			tab.AddRow([]string{"", "", "", k, v, ""})
 		}
 		asstesString = append(asstesString, tab.String())
+	}
+	if isRemove {
+		GetSnifferObj().AlivedAssetHosts = nil
 	}
 	return
 }
