@@ -57,11 +57,11 @@ func initKernel() {
 	fmt.Println("1. 使用默认配置")
 	fmt.Println("2. 自定义配置")
 	var id int
-	fmt.Scanf("%d", &id)
+	fmt.Scanln(&id)
 	if id == 2 {
 		fmt.Println("自定义内核配置项：[1/2]")
 		fmt.Print("运行线程数： ")
-		fmt.Scanf("%d", &config.KnelConfig.RunTaskThreads)
+		fmt.Scanln(&config.KnelConfig.RunTaskThreads)
 		fmt.Println("自定义内核配置项：[2/2]")
 		fmt.Print("是否开启内核日志?(yes/no)：  ")
 		config.KnelConfig.IsPrintLogInfo = scanYesOrNo()
@@ -74,6 +74,7 @@ func initKernel() {
 	}
 	fmt.Println()
 	fmt.Print(" *******************  内核初始化完成  *******************\n")
+	fmt.Print(" *******************     Running     *******************\n")
 }
 
 // 输入 yes 或者y 视为true。不区分大小写
