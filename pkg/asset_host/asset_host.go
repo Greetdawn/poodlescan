@@ -78,6 +78,7 @@ func (this *AssetHost) AppendOpenedPortMap(portMap sync.Map) {
 }
 
 func SyncMap2Map(sm sync.Map) (m map[string]string) {
+	m = make(map[string]string)
 	sm.Range(func(key, value interface{}) bool {
 		k := key.(string)
 		v := value.(string)

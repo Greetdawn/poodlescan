@@ -90,22 +90,23 @@ func run(task *TASKUint, tp common.TaskPacket) {
 
 var onceParsePortRange sync.Once
 
+func setPortsPool(task *TASKUint) {
+	onceParsePortRange.Do(func() {
+		var err error
+		portStr := task.Params["ports"]
+		asset_host.SCAN_PORT_PORTS, err = getPorts(portStr)
+		if err != nil {
+			logger.LogError(err.Error(), logger.LOG_TERMINAL_FILE)
+		}
+	})
+}
 func doSniffer(task *TASKUint, tp common.TaskPacket, sniffer *asset_host.Sniffer, asset *asset_host.AssetHost) error {
 	var runSync sync.WaitGroup
 	var err error
 	// 1. 端口扫描功能
 	if tp.PortScan {
 		// 分析端口列表
-		onceParsePortRange.Do(func() {
-			portStr := task.Params["ports"]
-			asset_host.SCAN_PORT_PORTS, err = getPorts(portStr)
-			if err != nil {
-				logger.LogError(err.Error(), logger.LOG_TERMINAL_FILE)
-			}
-		})
-		if err != nil {
-			return err
-		}
+		setPortsPool(task)
 
 		// 执行端口扫描
 		runSync.Add(1)
@@ -119,7 +120,25 @@ func doSniffer(task *TASKUint, tp common.TaskPacket, sniffer *asset_host.Sniffer
 	// 2. 子域探测
 	if tp.SubDomain {
 		logger.LogInfo("执行子域探测功能", logger.LOG_TERMINAL)
+		// 分析端口列表
+		setPortsPool(task)
+
 		asset.SubDomains = append(asset.SubDomains, sniffer.SniffSubDomain(task.Target)...)
+		ptr1 := &asset.SubDomains[0]
+		(*ptr1).IsAlived = true
+		// 针对子域进行端口扫描和存活性探测
+		for i := 0; i < len(asset.SubDomains); i++ {
+			ptrOfSubDomain := &asset.SubDomains[i]
+			(*ptrOfSubDomain).IsAlived = sniffer.IsHostAlived(ptrOfSubDomain.Name)
+			(*ptrOfSubDomain).OpenPorts = asset_host.SyncMap2Map(sniffer.SnifferHostOpenedPorts(ptrOfSubDomain.Name))
+		}
+
+		// for _, v := range asset.SubDomains {
+		// 	fmt.Println("ff")
+		// 	(&v).IsAlived = true
+		// 	//v.IsAlived = sniffer.IsHostAlived(v.Name)
+		// 	//v.OpenPorts = asset_host.SyncMap2Map(sniffer.SnifferHostOpenedPorts(v.Name))
+		// }
 	}
 
 	// 3. 爬虫

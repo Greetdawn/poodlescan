@@ -32,12 +32,12 @@ const (
 // 定义所需参数
 var (
 	FOFA_EMAIL string = "cannopznjooss@gmail.com"
-	FOFA_KEY   string = "a63e6f1bd58eba5877dbb0420addb6e9"
+	FOFA_KEY   string = "12dc7df5af8ddfa45fd825cff6ea7cf4"
 	// 子域信息收集保存结果
 	Results []string
 	// 子域收集方法
 	// 默认使用fofa暴露接口进行子域收集
-	Get_Subdomain_Method GetSubdomainMethod = GSM_FOFA_API
+	Get_Subdomain_Method GetSubdomainMethod = GSM_SUBFINDER
 )
 
 // 定义json返回结构体
@@ -124,7 +124,7 @@ func _getSubdomainByFofa(domain string) []string {
 }
 
 // 集成subfinder的子域扫描接口
-func _subfinder(domain string) []string {
+func _subfinder(domain string) (domainNames []string) {
 	runnerInstance, err := runner.NewRunner(&runner.Options{
 		Threads:            100,                             // Thread controls the number of threads to use for active enumerations
 		Timeout:            30,                              // Timeout is the seconds to wait for sources to respond
@@ -147,7 +147,11 @@ func _subfinder(domain string) []string {
 		logger.LogError(err.Error(), logger.LOG_TERMINAL)
 	}
 
-	fmt.Printf("%s", data)
+	for _, v := range strings.Split(string(data), "\n") {
+		if len(v) > 0 {
+			domainNames = append(domainNames, v)
+		}
+	}
 
-	return nil
+	return domainNames
 }

@@ -1,6 +1,7 @@
 package asset_host
 
 import (
+	"fmt"
 	"poodle/pkg/common"
 	"sync"
 
@@ -75,6 +76,12 @@ func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
 	return
 }
 
+type subInfo struct {
+	Name   string
+	Alived string
+	Ports  map[string]string
+}
+
 func Assets2Strings(isRemove bool) (asstesString []string) {
 	for _, v := range GetSnifferObj().AlivedAssetHosts {
 		var targ string
@@ -91,25 +98,43 @@ func Assets2Strings(isRemove bool) (asstesString []string) {
 			targAlived = "不存活"
 		}
 
-		var subDomain [][]string
+		// 子域名称 | 子域存活性 | 子域开放的端口 | 端口信息
+		var subDomain []subInfo
 		for _, v := range v.SubDomains {
 			if v.IsAlived {
-				subDomain = append(subDomain, []string{v.Name, "存活"})
+				subDomain = append(subDomain, subInfo{
+					Name:   v.Name,
+					Alived: "存活",
+					Ports:  v.OpenPorts,
+				})
 			} else {
-				subDomain = append(subDomain, []string{v.Name, "不存活"})
+				subDomain = append(subDomain, subInfo{
+					Name:   v.Name,
+					Alived: "不存活",
+					Ports:  v.OpenPorts,
+				})
 			}
 		}
 
 		tab, _ := gotable.Create("目标", "子域名", "存活状态", "开放端口", "服务信息", "爬虫结果")
+		// 目标存活性
 		tab.AddRow([]string{targ, "", targAlived, "", "", ""})
 
-		for _, v := range subDomain {
-			tab.AddRow([]string{"", v[0], v[1], "", "", ""})
-		}
+		// 目标开放的端口
 		for k, v := range v.OpenedPorts {
 			tab.AddRow([]string{"", "", "", k, v, ""})
 		}
+
+		// 子域
+		for _, v := range subDomain {
+			tab.AddRow([]string{"", v.Name, v.Alived, "", "", ""})
+			for port, info := range v.Ports {
+				tab.AddRow([]string{"", "", "", port, info, ""})
+			}
+		}
+
 		asstesString = append(asstesString, tab.String())
+		fmt.Println(asstesString)
 	}
 	if isRemove {
 		GetSnifferObj().AlivedAssetHosts = nil

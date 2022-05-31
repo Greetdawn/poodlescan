@@ -38,7 +38,6 @@ type TASKUint struct {
 
 // 命令行解析，生成任务，将任务写入任务通道中
 func GenrateTasks(tp *common.TaskPacket) (tasknumber int, err error) {
-	fmt.Printf("tp: %v\n", tp)
 	// 3. 解析用户的输入目标
 	targets, err := parseUserInputTargetString(tp.UserInputTargetString)
 	if err != nil {
