@@ -8,15 +8,20 @@ import (
 	"poodle/pkg/config"
 	"poodle/pkg/logger"
 	"poodle/pkg/mygrpc"
+	"poodle/pkg/os"
 
 	"sort"
 	"strings"
 	"time"
 
 	"google.golang.org/grpc"
+
+	"github.com/fatih/color"
 )
 
 func main() {
+	// 检查内核运行环境
+	kernelEnvCheck()
 	// 初始化内核
 	initKernel()
 
@@ -39,9 +44,6 @@ func main() {
 }
 
 func initKernel() {
-	// 输出banner信息
-	common.ShowBanner()
-	fmt.Println()
 	fmt.Print("正在启动内核，请稍后")
 	// 字符串数组排序
 	sort.Strings(common.DOMAINARRAY)
@@ -73,16 +75,24 @@ func initKernel() {
 		time.Sleep(time.Duration(50) * time.Microsecond)
 	}
 	fmt.Println()
-	fmt.Print(" *******************  内核初始化完成  *******************\n")
+	fmt.Print(" *******************  内核初始化完成   *******************\n")
 	fmt.Print(" *******************     Running     *******************\n")
+}
+
+func kernelEnvCheck() {
+	fmt.Println("运行环境检查......")
+	if os.IsHavaNMap() {
+		color.Green("[+] namp")
+	} else {
+		os.InstallNmap()
+		color.Yellow("[x] namp")
+	}
 }
 
 // 输入 yes 或者y 视为true。不区分大小写
 func scanYesOrNo() bool {
 	var s string
 	fmt.Scanf("%s", &s)
-	//s = strings.ReplaceAll(s, "\r", "")
-	//s = strings.ReplaceAll(s, "\n", "")
 	if strings.ToLower(s) == "yes" || strings.ToLower(s) == "y" {
 		return true
 	}

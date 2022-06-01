@@ -7,19 +7,6 @@ const (
 	TASKUint_TargetType_Domain TASKUint_TargetType = 2
 )
 
-//************ 全局变量定义区 ************
-// 任务通道
-// var G_TaskChannal chan *TASKUint
-
-//**************************************
-
-// type TASKUint struct {
-// 	Target      string              // 用户输入的扫描目标
-// 	TargetType  TASKUint_TargetType // 目标表示类型，IP或者域名
-// 	ControlCode uint                // 控制码
-// 	Params      map[string]string   // 用到的参数
-// }
-
 ////////////////////////////////////////////////////////////////////////////////////
 // 定义常见的域名后缀
 // 新增.top后缀

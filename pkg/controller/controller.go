@@ -132,13 +132,6 @@ func doSniffer(task *TASKUint, tp common.TaskPacket, sniffer *asset_host.Sniffer
 			(*ptrOfSubDomain).IsAlived = sniffer.IsHostAlived(ptrOfSubDomain.Name)
 			(*ptrOfSubDomain).OpenPorts = asset_host.SyncMap2Map(sniffer.SnifferHostOpenedPorts(ptrOfSubDomain.Name))
 		}
-
-		// for _, v := range asset.SubDomains {
-		// 	fmt.Println("ff")
-		// 	(&v).IsAlived = true
-		// 	//v.IsAlived = sniffer.IsHostAlived(v.Name)
-		// 	//v.OpenPorts = asset_host.SyncMap2Map(sniffer.SnifferHostOpenedPorts(v.Name))
-		// }
 	}
 
 	// 3. 爬虫
