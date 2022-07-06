@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
+	"poodle/pkg/config"
 	"regexp"
 	"sort"
 	"strconv"
@@ -193,7 +193,7 @@ func isIpRange(ipstr string) bool {
 // 将端口的描述性字符串转成端口列表
 func getPorts(str string) (ports []string, err error) {
 	if str == "top1000" {
-		ports = asset_host.SCAN_PORT_POODLE_COMMON_PORTS
+		ports = config.GConfig.GetDefaultScanPorts()
 		return
 	}
 

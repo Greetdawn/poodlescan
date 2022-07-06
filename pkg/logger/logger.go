@@ -109,7 +109,7 @@ func LogInfo(log string, mode LOG_OUTPUT_MODE) {
 		(*GPtr_LogModuleInfoChannal) <- fmt.Sprintf("["+FgGreen("INFO")+"]", log)
 	}
 
-	if !config.KnelConfig.IsPrintLogInfo {
+	if !config.GConfig.IsPrintLogInfo {
 		return
 	}
 

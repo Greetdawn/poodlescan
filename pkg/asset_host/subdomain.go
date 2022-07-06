@@ -13,7 +13,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"poodle/pkg/logger"
+	"poodle/pkg/config"
 	"strings"
 	"time"
 
@@ -31,13 +31,11 @@ const (
 
 // 定义所需参数
 var (
-	FOFA_EMAIL string = "cannopznjooss@gmail.com"
-	FOFA_KEY   string = "12dc7df5af8ddfa45fd825cff6ea7cf4"
 	// 子域信息收集保存结果
 	Results []string
 	// 子域收集方法
 	// 默认使用fofa暴露接口进行子域收集
-	Get_Subdomain_Method GetSubdomainMethod = GSM_SUBFINDER
+	ScanSubdomainMethod string
 )
 
 // 定义json返回结构体
@@ -49,11 +47,11 @@ type ResponseJson struct {
 }
 
 // 调用子域收集功能
-func ScanSubDomain(domain string) []string {
-	switch Get_Subdomain_Method {
-	case GSM_FOFA_API:
+func ScanSubDomain(domain string) ([]string, error) {
+	switch ScanSubdomainMethod {
+	case "fofa":
 		return _getSubdomainByFofa(domain)
-	case GSM_SUBFINDER:
+	case "subfinder":
 		return _subfinder(domain)
 	default:
 		return _getSubdomainByFofa(domain)
@@ -68,28 +66,29 @@ func ScanSubDomain(domain string) []string {
 // "key", FOFA_KEY 用户的fofa key
 // "page", page 查询返回结果的页面
 // "qbase64", domain 传入需要查询的域名
-func _getSubdomainByFofa(domain string) []string {
+func _getSubdomainByFofa(domain string) ([]string, error) {
 	// 生成fofa接口固定域名搜过格式 domain="baidu.com" 进过base64编码操作
 	qbase64 := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("domain=\"%s\"", domain)))
 
 	// 构造完整请求目标的fofa API
 	// 详情参阅 https://fofa.info/static_pages/api_help
-	fofaURL := fmt.Sprintf("https://fofa.info/api/v1/search/all?full=true&fields=host&page=1&size=10000&email=%s&key=%s&qbase64=%s", FOFA_EMAIL, FOFA_KEY, qbase64)
+	fofaURL := fmt.Sprintf("https://fofa.info/api/v1/search/all?full=true&fields=host&page=1&size=10000&email=%s&key=%s&qbase64=%s",
+		config.GConfig.ScanDomainConfig.FOFAConfig.Email,
+		config.GConfig.ScanDomainConfig.FOFAConfig.Key,
+		qbase64)
 
 	// fmt.Printf("fofaURL: %v\n", fofaURL)
 
 	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Get(fofaURL)
 	if err != nil {
-		logger.LogError(err.Error(), logger.LOG_TERMINAL)
-		return nil
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	respContent, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.LogError(err.Error(), logger.LOG_TERMINAL)
-		return nil
+		return nil, err
 	}
 
 	// 初始化结构体
@@ -98,13 +97,11 @@ func _getSubdomainByFofa(domain string) []string {
 	// 解析网页返回结果的json串，保存至结构体中
 	err = json.Unmarshal(respContent, &respjson)
 	if err != nil {
-		logger.LogError(err.Error(), logger.LOG_TERMINAL)
-		return nil
+		return nil, err
 	}
 
 	if respjson.Error {
-		logger.LogError(respjson.ErrMsg, logger.LOG_TERMINAL)
-		return nil
+		return nil, err
 	}
 
 	if respjson.Size > 0 {
@@ -119,12 +116,12 @@ func _getSubdomainByFofa(domain string) []string {
 		}
 		// fmt.Printf("Results: %v\n", Results)
 	}
-
-	return Results
+	fmt.Println(Results)
+	return Results, nil
 }
 
 // 集成subfinder的子域扫描接口
-func _subfinder(domain string) (domainNames []string) {
+func _subfinder(domain string) (domainNames []string, e error) {
 	runnerInstance, err := runner.NewRunner(&runner.Options{
 		Threads:            100,                             // Thread controls the number of threads to use for active enumerations
 		Timeout:            30,                              // Timeout is the seconds to wait for sources to respond
@@ -135,16 +132,18 @@ func _subfinder(domain string) (domainNames []string) {
 		Recursive:          passive.DefaultRecursiveSources, // Use the default list of recursive sources
 		Providers:          &runner.Providers{},             // Use empty api keys for all providers
 	})
-
+	if err != nil {
+		e = err
+	}
 	buf := bytes.Buffer{}
 	err = runnerInstance.EnumerateSingleDomain(context.Background(), domain, []io.Writer{&buf})
 	if err != nil {
-		logger.LogError(err.Error(), logger.LOG_TERMINAL)
+		e = err
 	}
 
 	data, err := io.ReadAll(&buf)
 	if err != nil {
-		logger.LogError(err.Error(), logger.LOG_TERMINAL)
+		e = err
 	}
 
 	for _, v := range strings.Split(string(data), "\n") {
@@ -153,5 +152,5 @@ func _subfinder(domain string) (domainNames []string) {
 		}
 	}
 
-	return domainNames
+	return domainNames, e
 }

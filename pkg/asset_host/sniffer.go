@@ -49,28 +49,32 @@ func GetSnifferObj() *Sniffer {
 }
 
 // 追加存活资产信息
-func (this *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
-	this.AlivedAssetHosts = append(this.AlivedAssetHosts, asset)
+func (sniffer *Sniffer) AppendAlivedAssetHost(asset AssetHost) {
+	sniffer.AlivedAssetHosts = append(sniffer.AlivedAssetHosts, asset)
 }
 
 // 追加不存活资产信息
-func (this *Sniffer) AppendDiedAssetHost(asset AssetHost) {
-	this.DiedAssetHosts = append(this.DiedAssetHosts, asset)
+func (sniffer *Sniffer) AppendDiedAssetHost(asset AssetHost) {
+	sniffer.DiedAssetHosts = append(sniffer.DiedAssetHosts, asset)
 }
 
 // 嗅探目标主机是否存活
-func (this *Sniffer) IsHostAlived(target string) bool {
+func (sniffer *Sniffer) IsHostAlived(target string) bool {
 	return common.IsHostAlived(target)
 }
 
 // 嗅探目标主机开放端口信息
-func (this *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
+func (sniffer *Sniffer) SnifferHostOpenedPorts(target string) sync.Map {
 	return ScanHostOpenedPorts(target)
 }
 
 // 嗅探域名的子域信息
-func (this *Sniffer) SniffSubDomain(domain string) (domains []common.Domain) {
-	for _, v := range ScanSubDomain(domain) {
+func (sniffer *Sniffer) SniffSubDomain(domain string) (domains []common.Domain, e error) {
+	subdomain, err := ScanSubDomain(domain)
+	if err != nil {
+		e = err
+	}
+	for _, v := range subdomain {
 		domains = append(domains, common.Domain{Name: v})
 	}
 	return

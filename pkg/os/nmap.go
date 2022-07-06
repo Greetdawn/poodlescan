@@ -10,6 +10,7 @@ import (
 	"github.com/Ullaakut/nmap/v2"
 )
 
+// 判断系统中是否安装nmap
 func IsHavaNMap() bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
@@ -27,7 +28,7 @@ func IsHavaNMap() bool {
 	if warnings != nil {
 		log.Printf("Warnings: \n %v", warnings)
 	}
-	return false
+	return true
 }
 
 func InstallNmap() {

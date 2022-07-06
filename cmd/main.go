@@ -22,6 +22,7 @@ import (
 func main() {
 	// 检查内核运行环境
 	kernelEnvCheck()
+
 	// 初始化内核
 	initKernel()
 
@@ -48,7 +49,7 @@ func initKernel() {
 	// 字符串数组排序
 	sort.Strings(common.DOMAINARRAY)
 	// 创建配置对象
-	config.KnelConfig = config.NewDefaultKernelConfig()
+	config.InitConfigModule()
 
 	for i := 0; i < 10; i++ {
 		fmt.Print(".")
@@ -58,15 +59,17 @@ func initKernel() {
 	fmt.Println("现在开始配置内核，请选择配置策略：")
 	fmt.Println("1. 使用默认配置")
 	fmt.Println("2. 自定义配置")
-	var id int
-	fmt.Scanln(&id)
+
+	// only debug
+	var id int = 1
+	// fmt.Scanln(&id)
 	if id == 2 {
 		fmt.Println("自定义内核配置项：[1/2]")
 		fmt.Print("运行线程数： ")
-		fmt.Scanln(&config.KnelConfig.RunTaskThreads)
+		fmt.Scanln(&config.GConfig.ScanPortConfig.RunTaskThreads)
 		fmt.Println("自定义内核配置项：[2/2]")
 		fmt.Print("是否开启内核日志?(yes/no)：  ")
-		config.KnelConfig.IsPrintLogInfo = scanYesOrNo()
+		config.GConfig.IsPrintLogInfo = scanYesOrNo()
 	}
 
 	fmt.Print("正在完成配置，请稍后")

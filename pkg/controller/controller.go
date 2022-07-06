@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"os"
 	"poodle/pkg/asset_host"
 	"poodle/pkg/common"
 	"poodle/pkg/config"
@@ -16,8 +17,8 @@ var mutexOfAppendOpenedPorts sync.Mutex
 //(alivedList asset_host.AssetHost, diedList asset_host.AssetHost, err error)
 func Run(tp common.TaskPacket) {
 	var tmps sync.WaitGroup
-	tmps.Add(config.KnelConfig.RunTaskThreads)
-	for i := 0; i < config.KnelConfig.RunTaskThreads; i++ {
+	tmps.Add(config.GConfig.ScanPortConfig.RunTaskThreads)
+	for i := 0; i < config.GConfig.ScanPortConfig.RunTaskThreads; i++ {
 		go func() {
 			defer tmps.Done()
 			var end = true
@@ -73,8 +74,8 @@ func run(task *TASKUint, tp common.TaskPacket) {
 	// 嗅探模块
 	if tp.Sniffer {
 		if err := doSniffer(task, tp, sniffer, &assetHost); err != nil {
-			logger.LogInfo(err.Error(), logger.LOG_TERMINAL)
-			return
+			logger.LogError(err.Error(), logger.LOG_TERMINAL)
+			os.Exit(0)
 		}
 	}
 
@@ -123,9 +124,16 @@ func doSniffer(task *TASKUint, tp common.TaskPacket, sniffer *asset_host.Sniffer
 		// 分析端口列表
 		setPortsPool(task)
 
-		asset.SubDomains = append(asset.SubDomains, sniffer.SniffSubDomain(task.Target)...)
-		ptr1 := &asset.SubDomains[0]
-		(*ptr1).IsAlived = true
+		domains, err := sniffer.SniffSubDomain(task.Target)
+		if err != nil {
+			return err
+		}
+		asset.SubDomains = append(asset.SubDomains, domains...)
+		if len(asset.SubDomains) == 0 {
+			logger.LogWarn("Not found any subdomain.", logger.LOG_TERMINAL)
+		}
+		// ptr1 := &asset.SubDomains[0]
+		// (*ptr1).IsAlived = true
 		// 针对子域进行端口扫描和存活性探测
 		for i := 0; i < len(asset.SubDomains); i++ {
 			ptrOfSubDomain := &asset.SubDomains[i]
